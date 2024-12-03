@@ -1,10 +1,5 @@
 package com.servPet.pg.model;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 //import java.util.Base64;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,12 +7,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
-
-import com.servPet.pgpic.model.PgPicVO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
