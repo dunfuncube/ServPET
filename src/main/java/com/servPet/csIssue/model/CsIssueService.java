@@ -10,8 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.servPet.admin.model.AdminRepository;
 import com.servPet.admin.model.AdminVO;
-import com.servPet.csIssue.model.CsIssueRepository;
 import com.servPet.meb.model.MebVO;
 
 @Service("csIssueService")
@@ -21,7 +21,7 @@ public class CsIssueService {
     private CsIssueRepository repository;
 
     @Autowired
-    private AdminVO adminRepository;
+    private AdminRepository adminRepository;
 
     @Transactional
     public CsIssueVO addCsIssue(CsIssueVO csIssueVO) {
