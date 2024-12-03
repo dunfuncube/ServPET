@@ -8,6 +8,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import java.io.Serial;
 
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
