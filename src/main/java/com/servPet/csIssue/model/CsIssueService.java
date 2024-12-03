@@ -21,7 +21,7 @@ public class CsIssueService {
     private CsIssueRepository repository;
 
     @Autowired
-    private AdminRepository adminRepository;
+    private AdminVO adminRepository;
 
     @Transactional
     public CsIssueVO addCsIssue(CsIssueVO csIssueVO) {
