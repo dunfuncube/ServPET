@@ -1,15 +1,12 @@
 package com.servPet.pgOdd.model;
 
-import javax.persistence.*;
-
-import com.servPet.pgOrder.model.PgOrderVO;
-import com.servPet.pgSvc.model.PgSvcVO;
-import com.servPet.pgSvcItem.model.PgSvcItemVO;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @NoArgsConstructor
@@ -19,42 +16,54 @@ public class PgOddVO implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id // 主鍵
-	@ManyToOne
-	@JoinColumn(name = "PGO_ID")
-	private PgOrderVO pgOrderVO;
+	@Column(name = "PGO_ID", nullable = false)
+	private Integer pgoId;
 
-	@OneToOne
-	@JoinColumn(name = "SVC_ID")
-	private PgSvcItemVO pgSvcItemVO;
 
-	@OneToOne
-	@JoinColumn(name = "SVC_PRICE")
-	private PgSvcVO pgSvcVO;
+	@Column(name = "SVC_ID", nullable = false)
+	private Integer svcId;
 
-	public PgOrderVO getPgOrderVO() {
-		return pgOrderVO;
+	@Column(name = "SVC_PRICE", nullable = false)
+	private Integer svcPrice;
+
+	public Integer getPgoId() {
+		return pgoId;
 	}
 
-	public void setPgOrderVO(PgOrderVO pgOrderVO) {
-		this.pgOrderVO = pgOrderVO;
+	public void setPgoId(Integer pgoId) {
+		this.pgoId = pgoId;
 	}
 
-	public PgSvcItemVO getPgSvcItemVO() {
-		return pgSvcItemVO;
+	public Integer getSvcId() {
+		return svcId;
 	}
 
-	public void setPgSvcItemVO(PgSvcItemVO pgSvcItemVO) {
-		this.pgSvcItemVO = pgSvcItemVO;
+	public void setSvcId(Integer svcId) {
+		this.svcId = svcId;
 	}
 
-	public PgSvcVO getPgSvcVO() {
-		return pgSvcVO;
+	public Integer getSvcPrice() {
+		return svcPrice;
 	}
 
-	public void setPgSvcVO(PgSvcVO pgSvcVO) {
-		this.pgSvcVO = pgSvcVO;
+	public void setSvcPrice(Integer svcPrice) {
+		this.svcPrice = svcPrice;
 	}
+
+
 	
 	
 
 }
+
+//@ManyToOne
+//@JoinColumn(name = "PGO_ID")
+//private PgOrderVO pgOrderVO;
+//
+//@OneToOne
+//@JoinColumn(name = "SVC_ID")
+//private PgSvcItemVO pgSvcItemVO;
+//
+//@OneToOne
+//@JoinColumn(name = "SVC_PRICE")
+//private PgSvcVO pgSvcVO;
