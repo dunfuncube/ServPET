@@ -16,7 +16,7 @@ public class PgFavService {
 
     // 查詢特定會員的所有收藏美容師
     public List<PgFavVO> getAllFavoritesByMebId(Integer mebId) {
-        return pgFavRepository.findByMebVO_MebId(mebId);
+        return pgFavRepository.findByMebId_MebId(mebId);
     }
 
     // 查詢特定會員是否收藏了特定美容師
