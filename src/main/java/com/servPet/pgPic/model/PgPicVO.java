@@ -1,4 +1,4 @@
-package com.servPet.pgPic.model;
+package com.servPet.pgpic.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
