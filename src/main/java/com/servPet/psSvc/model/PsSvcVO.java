@@ -139,4 +139,5 @@ public class PsSvcVO implements Serializable {
     public void setSvcPrice(Integer svcPrice) {
         this.svcPrice = svcPrice;
     }
+
 }
