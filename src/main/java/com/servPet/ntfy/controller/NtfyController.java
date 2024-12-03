@@ -1,7 +1,7 @@
-package com.servPet.controller;
+package com.servPet.ntfy.controller;
 
-import com.servPet.model.NtfyVO;
-import com.servPet.service.NtfyService;
+import com.servPet.ntfy.model.NtfyVO;
+import com.servPet.ntfy.model.NtfyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

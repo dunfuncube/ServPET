@@ -1,4 +1,4 @@
-package com.servPet.model;
+package com.servPet.ntfy.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;

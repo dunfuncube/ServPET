@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PSComplVO implements Serializable {
+public class PsComplVO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
