@@ -8,7 +8,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import com.servPet.meb.model.MebVO;
 import com.servPet.pg.model.PgVO;
@@ -37,7 +36,7 @@ public class PgFavVO implements java.io.Serializable {
 	@JoinColumn(name = "MEB_ID")
 	private MebVO mebVO;
 	
-	// 關聯到 Product_Details 表格內的 PD_ID 欄位
+	// 關聯到 Product_Details 表格內的 PG_ID 欄位
 	@ManyToOne
 	@JoinColumn(name = "PG_ID")
 	private PgVO PgVO;
