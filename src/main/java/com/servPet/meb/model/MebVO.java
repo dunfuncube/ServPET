@@ -2,80 +2,91 @@ package com.servPet.meb.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+//import lombok.Data;
+//import lombok.NoArgsConstructor;
+//@Data // 自動生成 getter、setter、toString、equals 和 hashCode
+//@NoArgsConstructor // 自動生成無參構造函數
 
 @Entity
-@Table(name = "MEMBER") // 設定數據庫表名
+@Table(name = "MEMBER")
 public class MebVO implements Serializable {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY) // 設定主鍵自動生成
-	@Column(name = "meb_id") // 對應數據庫中的 MEB_ID 欄位
-	private Integer mebId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "MEB_ID")
+    private Integer mebId;
 
-//    @OneToMany(mappedBy = "mebVO")
-//    private Set<PgOrderVO> pgOrderVO = new HashSet<PgOrderVO>();
+    @NotBlank(message = "名字不可為空")
+    @Size(min = 2, max = 10, message = "名字長度應在 2 到 10 之間")
+    @Column(name = "MEB_NAME", nullable = false, length = 10)
+    private String mebName;
 
-	@NotBlank(message = "名字不可為空")
-	@Column(name = "meb_name") // 對應數據庫中的 MEB_NAME 欄位
-	private String mebName;
+    @Email(message = "請輸入有效的電子郵件")
+    @NotBlank(message = "電子郵件不可為空")
+    @Column(name = "MEB_MAIL", nullable = false, unique = true)
+    private String mebMail;
 
-	@Email(message = "必須是Email 格式")
-	@NotBlank(message = "e-mail不可為空")
-	@Column(name = "meb_mail") // 對應數據庫中的 MEB_MAIL 欄位
-	private String mebMail;
+    @NotBlank(message = "密碼不可為空")
+    @Pattern(
+            regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d!@#$%^&*()_+]{6,16}$",
+            message = "密碼必須為長度6~16位，至少包含英文字母和數字，可包含特殊符號"
+        )
+    @Column(name = "MEB_PWD", nullable = false)
+    private String mebPwd;
 
-	@NotBlank(message = "密碼不可為空")
-	@Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[\\w]{6,16}$", message = "密碼必須為長度6~16位碼大小寫英文加數字")
-	@Column(name = "meb_pwd") // 對應數據庫中的 MEB_PWD 欄位
-	private String mebPwd;
+    @Size(max = 5, message = "狀態長度不能超過 5 字")
+    @Column(name = "MEB_STATUS", length = 5)
+    private String mebStatus;
 
-	@Column(name = "meb_status") // 對應數據庫中的 MEB_STATUS 欄位
-	private Integer mebStatus;
+    @Size(max = 100, message = "地址長度不能超過 100 字")
+    @Column(name = "MEB_ADDRESS", length = 100)
+    private String mebAddress;
 
-	@Column(name = "meb_address") // 對應數據庫中的 MEB_ADDRESS 欄位
-	private String mebAddress;
+    @Pattern(regexp = "^\\d{10,15}$", message = "電話號碼必須為 10-15 位數字")
+    @Column(name = "MEB_PHONE", length = 15)
+    private String mebPhone;
 
-	@Column(name = "meb_phone") // 對應數據庫中的 MEB_PHONE 欄位
-	private String mebPhone;
+    @Pattern(regexp = "^(M|F|O)$", message = "性別只能是 M (男性), F (女性), 或 O (其他)")
+    @Column(name = "MEB_SEX", length = 2)
+    private String mebSex;
 
-	@Column(name = "meb_sex") // 對應數據庫中的 MEB_SEX 欄位
-	private String mebSex;
+    @Column(name = "BAL", nullable = false)
+    private Double bal = 0.0;
 
-	@Column(name = "bal") // 對應數據庫中的 BAL 欄位
-	private Double bal;
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "MEB_IMG")
+    private byte[] mebImg;
 
-	@Column(name = "meb_img") // 對應數據庫中的 MEB_IMG 欄位
-	private byte[] mebImg; // 修正為 byte[] 來存儲圖片的二進制數據
+    @PrePersist
+    public void prePersist() {
+        if (this.mebStatus == null) {
+            this.mebStatus = "未激活"; // 設定默認狀態
+        }
+        if (this.bal == null) {
+            this.bal = 0.0; // 設定默認餘額
+        }
+    }//確保bal可以初始化。
 
-	// 無參構造函數
 	public MebVO() {
 		super();
+		
 	}
 
-	// 包含圖片二進制數據的構造函數
-	public MebVO(String mebName, String mebMail, String mebPwd, Integer mebStatus, String mebAddress, String mebPhone,
-			String mebSex, Double bal, byte[] mebImg) {
-		this.mebName = mebName;
-		this.mebMail = mebMail;
-		this.mebPwd = mebPwd;
-		this.mebStatus = mebStatus;
-		this.mebAddress = mebAddress;
-		this.mebPhone = mebPhone;
-		this.mebSex = mebSex;
-		this.bal = bal;
-		this.mebImg = mebImg;
-	}
-
-	// Getters 和 Setters
 	public Integer getMebId() {
 		return mebId;
 	}
@@ -108,11 +119,11 @@ public class MebVO implements Serializable {
 		this.mebPwd = mebPwd;
 	}
 
-	public Integer getMebStatus() {
+	public String getMebStatus() {
 		return mebStatus;
 	}
 
-	public void setMebStatus(Integer mebStatus) {
+	public void setMebStatus(String mebStatus) {
 		this.mebStatus = mebStatus;
 	}
 
@@ -156,11 +167,10 @@ public class MebVO implements Serializable {
 		this.mebImg = mebImg;
 	}
 
-	// 覆寫 toString() 方法，以便更好地進行日誌記錄
 	@Override
 	public String toString() {
-		return "MebVO [mebId=" + mebId + ", mebName=" + mebName + ", mebMail=" + mebMail + ", mebPwd=" + mebPwd
+		return "MebVO [mebId=" + mebId + ", mebName=" + mebName + ", mebMail=" + mebMail 
 				+ ", mebStatus=" + mebStatus + ", mebAddress=" + mebAddress + ", mebPhone=" + mebPhone + ", mebSex="
-				+ mebSex + ", bal=" + bal + ", mebImg=" + (mebImg != null ? mebImg.length : 0) + " bytes]";
+				+ mebSex + ", bal=" + bal ;
 	}
 }

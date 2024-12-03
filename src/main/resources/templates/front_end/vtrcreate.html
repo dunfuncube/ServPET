@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create New VTR</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 20px;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+            display: inline-block;
+            width: 100%;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 15px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        input[type="text"]:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+
+        button {
+            display: inline-block;
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        .back-link a {
+            text-decoration: none;
+            color: #007BFF;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Error Message Styling */
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Create New VTR</h1>
+    
+    <!-- Display error message if money is negative -->
+    <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
+
+    <form th:action="@{/vtr/create}" th:object="${vtrVO}" method="post">
+        <div>
+            <label for="money">Money:</label>
+            <input type="text" th:field="*{money}" placeholder="Enter amount" required />
+        </div>
+        
+        <div>
+            <label for="traType">Transaction Type:</label>
+            <input type="text" th:field="*{traType}" placeholder="Enter transaction type" required />
+        </div>
+
+        <div>
+            <label for="mebId">Member ID:</label>
+            <input type="text" th:field="*{mebId}" placeholder="Enter member ID" required />
+        </div>
+
+        <div>
+            <button type="submit">Create</button>
+        </div>
+    </form>
+
+    <div class="back-link">
+        <a href="/vtr">Back to VTR List</a>
+    </div>
+</div>
+
+</body>
+</html>
