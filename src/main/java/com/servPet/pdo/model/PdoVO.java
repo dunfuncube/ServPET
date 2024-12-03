@@ -1,18 +1,10 @@
 package com.servPet.pdo.model;
 
-//import com.servPet.cartDetails.model.CartDetailsVO;
-import com.servPet.pdDetails.model.PdDetailsVO;
-import com.servPet.pdoItem.model.PdoItemVO;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,8 +19,14 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-@Getter
-@Setter
+import com.servPet.meb.model.MebVO;
+import com.servPet.pdoItem.model.PdoItemVO;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -43,17 +41,8 @@ public class PdoVO implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "MEB_ID", nullable = false)
-	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, mappedBy = "mebVO")
-	private Set<CartDetailsVO> cartDetailsVO = new HashSet();
-
-	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, mappedBy = "pdoVO")
-	private Set<PdoItemVO> pdoItemVO = new HashSet();
-
-	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, mappedBy = "pdDetailsVO")
-	private Set<PdDetailsVO> pdDetailsVO = new HashSet();
-
-	@Column(name = "MEB_NAME", nullable = false, length = 10)
-	private String mebName;
+//	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, mappedBy = "mebVO")
+	private MebVO mebVO;
 
 	@Column(name = "PDO_DATE", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
@@ -90,4 +79,8 @@ public class PdoVO implements Serializable {
 
 	@Column(name = "SHIPPING_STATUS", length = 1)
 	private String shippingStatus;
+	
+	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, mappedBy = "pdoVO")
+	private Set<PdoItemVO> pdoItemVO = new HashSet<>();
+
 }
