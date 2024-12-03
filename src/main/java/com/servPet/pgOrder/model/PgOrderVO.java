@@ -24,7 +24,7 @@ public class PgOrderVO implements java.io.Serializable {
 
 	@Id // 主鍵
 	@GeneratedValue(strategy = GenerationType.IDENTITY) // 使用自增的方式來生成主鍵
-	@Column(name = "PGO_ID")
+	@Column(name = "PGO_ID", nullable = false)
 	private Integer pgoId;
 
 	@Column(name = "MEB_ID", nullable = false)
