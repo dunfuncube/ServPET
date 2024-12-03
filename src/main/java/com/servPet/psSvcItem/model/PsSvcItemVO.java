@@ -27,12 +27,11 @@ public class PsSvcItemVO implements Serializable {
     @Column(name = "SVC_ID", updatable = false)
     private Integer svcId;
 
-//    @OneToMany(mappedBy = "psSvcItemVO")
-//    private Set<PsOrderVO> psOrderVO = new HashSet<PsOrderVO>();
-//    @OneToMany(mappedBy = "psSvcItemVO")
-//    private Set<PsOddVO> psOddVO = new HashSet<PsOddVO>();
-//    @OneToMany(mappedBy = "psSvcItemVO")
-//    private Set<PsSvcVO> psSvcVO = new HashSet<PsSvcVO>();
+    //服務項目編號多對一
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "PSO_ID", nullable = false) // 指定外鍵列名為 PSO_ID
+    private PsOrderVO psOrderVO;
+
 
 
     @Column(name = "SVC_DESCR")
