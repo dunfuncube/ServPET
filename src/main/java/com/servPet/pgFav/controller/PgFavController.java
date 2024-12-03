@@ -66,21 +66,21 @@ public class PgFavController {
         return "back-end/pgFav/update_pgFav_input";
     }
 
-    // 更新收藏商品 (表單提交)
-    @PostMapping("update")
-    public String update(@Valid PgFavVO pgFavVO, BindingResult result, ModelMap model) {
-        /*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
-        if (result.hasErrors()) {
-            return "back-end/pgFav/update_pgFav_input";
-        }
-        /*************************** 2.開始修改資料 *****************************************/
-        pgFavService.addFavorite(pgFavVO);
-        /*************************** 3.修改完成,準備轉交(Send the Success view) **************/
-        model.addAttribute("success", "- (修改成功)");
-        pgFavVO = pgFavService.getFavoriteById(pgFavVO.getPgFavId());
-        model.addAttribute("pgFavVO", pgFavVO);
-        return "back-end/pgFav/listOnePgFav";
-    }
+//    // 更新收藏商品 (表單提交)
+//    @PostMapping("update")
+//    public String update(@Valid PgFavVO pgFavVO, BindingResult result, ModelMap model) {
+//        /*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
+//        if (result.hasErrors()) {
+//            return "back-end/pgFav/update_pgFav_input";
+//        }
+//        /*************************** 2.開始修改資料 *****************************************/
+//        pgFavService.addFavorite(pgFavVO);
+//        /*************************** 3.修改完成,準備轉交(Send the Success view) **************/
+//        model.addAttribute("success", "- (修改成功)");
+//        pgFavVO = pgFavService.getFavoriteById(pgFavVO.getPgFavId());
+//        model.addAttribute("pgFavVO", pgFavVO);
+//        return "back-end/pgFav/listOnePgFav";
+//    }
 
     // 刪除收藏商品
     @PostMapping("delete")
@@ -93,14 +93,14 @@ public class PgFavController {
         return "redirect:/pgFav/listAllPgFav";
     }
 
-    // 使用者查看自己的收藏列表
-    @PostMapping("listPgFavs_ByCompositeQuery")
-    public String listAllPgFav(HttpServletRequest req, Model model) {
-        Map<String, String[]> map = req.getParameterMap();
-        List<PgFavVO> list = pgFavService.getAllFavorites(map);
-        model.addAttribute("pgFavListData", list);
-        return "back-end/pgFav/listAllPgFav";
-    }
+//    // 使用者查看自己的收藏列表
+//    @PostMapping("listPgFavs_ByCompositeQuery")
+//    public String listAllPgFav(HttpServletRequest req, Model model) {
+//        Map<String, String[]> map = req.getParameterMap();
+//        List<PgFavVO> list = pgFavService.getAllFavorites(map);
+//        model.addAttribute("pgFavListData", list);
+//        return "back-end/pgFav/listAllPgFav";
+//    }
     
     @GetMapping("listFavorites")
     @ResponseBody
@@ -109,8 +109,8 @@ public class PgFavController {
         List<Map<String, Object>> result = favorites.stream().map(fav -> {
             Map<String, Object> map = new HashMap<>();
             map.put("pgFavId", fav.getPgFavId());
-            map.put("productName", fav.getPgFavVO().getPdName());  // 假設 PgFavVO 有 pdName 欄位
-            map.put("pdFavStatus", fav.getPdFavStatus());
+//            map.put("productName", fav.getPgFavVO().getPdName());  // 假設 PgFavVO 有 pdName 欄位
+            map.put("pdFavStatus", fav.getPgFavStatus());
             return map;
         }).collect(Collectors.toList());
         return result;
