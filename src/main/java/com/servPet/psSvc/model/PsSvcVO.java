@@ -73,10 +73,9 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-@Setter
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
+
+
+
 @Entity
 @Table(name = "PET_SITTER_SERVICE")
 public class PsSvcVO implements Serializable {
@@ -84,6 +83,9 @@ public class PsSvcVO implements Serializable {
     // Getters and setters
     @EmbeddedId
     private PsSvcId id;
+
+    @Column(name = "SVC_ID")
+    private Integer svcId;
 
     @Column(name = "SVC_PRICE")
     private Integer svcPrice;
@@ -100,8 +102,42 @@ public class PsSvcVO implements Serializable {
         return Objects.equals(id, psSvcVO.id);
     }
 
+    public PsSvcVO() {
+    }
+
+    public PsSvcVO(PsSvcId id, Integer svcId, Integer svcPrice) {
+        this.id = id;
+        this.svcId = svcId;
+        this.svcPrice = svcPrice;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    public PsSvcId getId() {
+        return id;
+    }
+
+    public void setId(PsSvcId id) {
+        this.id = id;
+    }
+
+    public Integer getSvcId() {
+        return svcId;
+    }
+
+    public void setSvcId(Integer svcId) {
+        this.svcId = svcId;
+    }
+
+    public Integer getSvcPrice() {
+        return svcPrice;
+    }
+
+    public void setSvcPrice(Integer svcPrice) {
+        this.svcPrice = svcPrice;
+    }
+
 }

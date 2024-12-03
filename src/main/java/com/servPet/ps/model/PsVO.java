@@ -6,14 +6,16 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
+import java.io.Serial;
+
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "PET_SITTER")
 public class PsVO implements java.io.Serializable {
+	@Serial
 	private static final long serialVersionUID = 1L;
-
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
