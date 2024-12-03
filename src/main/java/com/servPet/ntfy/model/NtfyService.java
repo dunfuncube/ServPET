@@ -1,7 +1,7 @@
-package com.servPet.service;
+package com.servPet.ntfy.model;
 
-import com.servPet.model.NtfyVO;
-import com.servPet.repository.NtfyRepository;
+import com.servPet.ntfy.model.NtfyVO;
+import com.servPet.ntfy.model.NtfyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

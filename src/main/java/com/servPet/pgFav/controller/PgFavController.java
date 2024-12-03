@@ -93,14 +93,14 @@ public class PgFavController {
         return "redirect:/pgFav/listAllPgFav";
     }
 
-    // 使用者查看自己的收藏列表
-    @PostMapping("listPgFavs_ByCompositeQuery")
-    public String listAllPgFav(HttpServletRequest req, Model model) {
-        Map<String, String[]> map = req.getParameterMap();
-        List<PgFavVO> list = pgFavService.getAllFavorites(map);
-        model.addAttribute("pgFavListData", list);
-        return "back-end/pgFav/listAllPgFav";
-    }
+//    // 使用者查看自己的收藏列表
+//    @PostMapping("listPgFavs_ByCompositeQuery")
+//    public String listAllPgFav(HttpServletRequest req, Model model) {
+//        Map<String, String[]> map = req.getParameterMap();
+//        List<PgFavVO> list = pgFavService.getAllFavorites(map);
+//        model.addAttribute("pgFavListData", list);
+//        return "back-end/pgFav/listAllPgFav";
+//    }
     
     @GetMapping("listFavorites")
     @ResponseBody
@@ -109,7 +109,7 @@ public class PgFavController {
         List<Map<String, Object>> result = favorites.stream().map(fav -> {
             Map<String, Object> map = new HashMap<>();
             map.put("pgFavId", fav.getPgFavId());
-            map.put("productName", fav.getPgFavVO().getPdName());  // 假設 PgFavVO 有 pdName 欄位
+//            map.put("productName", fav.getPgFavVO().getPdName());  // 假設 PgFavVO 有 pdName 欄位
             map.put("pdFavStatus", fav.getPgFavStatus());
             return map;
         }).collect(Collectors.toList());
