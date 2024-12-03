@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>更新活動公告</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 15px;
+            text-align: center;
+            color: #007BFF;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>更新活動公告</h2>
+        <form th:action="@{/event/update}" method="post">
+            <!-- 活動 ID（隱藏） -->
+            <input type="hidden" name="infId" th:value="${eventVO.infId}" />
+
+            <!-- 標題 -->
+            <label for="title">標題</label>
+            <input type="text" id="title" name="title" th:value="${eventVO.title}" placeholder="請輸入標題" required />
+
+            <!-- 內容 -->
+            <label for="content">內容</label>
+            <textarea id="content" name="content" rows="5" placeholder="請輸入內容" required th:text="${eventVO.content}"></textarea>
+
+            <!-- 類型 -->
+            <label for="infType">公告類型</label>
+            <select id="infType" name="infType" required>
+                <option value="0" th:selected="${eventVO.infType == 0}">最新消息</option>
+                <option value="1" th:selected="${eventVO.infType == 1}">常見問題</option>
+                <option value="2" th:selected="${eventVO.infType == 2}">專欄文章</option>
+            </select>
+
+            <!-- 提交按鈕 -->
+            <button type="submit">更新公告</button>
+        </form>
+
+        <a class="back-link" th:href="@{/event/list}">返回活動列表</a>
+    </div>
+</body>
+</html>

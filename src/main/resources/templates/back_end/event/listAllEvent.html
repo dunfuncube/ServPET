@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>所有活動公告</title>
+   <style>
+    /* 通用樣式 */
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 0;
+        color: #333;
+    }
+
+    header {
+        background: linear-gradient(45deg, #4caf50, #81c784);
+        padding: 15px 20px;
+        color: white;
+        text-align: center;
+        font-size: 2em;
+        font-weight: bold;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+
+    h2 {
+    font-size: 2em !important; /* 1.5 倍父元素字體大小 */
+    margin: 20px 0; /* 上下外邊距 20px */
+    color: black; /* 字體顏色設為黑色 */
+    font-size: 1.5em; /* 字體相對大小設定 */
+    text-align: left; /* 將文字對齊到左邊 */
+    margin-left: 3%; 
+}
+
+
+    /* 表格樣式 */
+    table {
+        width: 100%;
+        margin: 20px auto;
+        border-collapse: collapse;
+        font-size: 1rem;
+        background-color: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+        padding: 12px;
+        border: 1px solid #ddd;
+        text-align: center;
+        word-wrap: break-word; /* 防止文字溢出 */
+    }
+
+    th {
+        background-color: #f2f2f2;
+        color: black;
+        font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f4f4f4;
+    }
+
+    tr:hover {
+        background-color: #e8f5e9;
+        cursor: pointer;
+    }
+
+    /* 操作按鈕樣式 */
+    .actions {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap; /* 當按鈕太多時自動換行 */
+    }
+
+    .button {
+        padding: 10px 20px;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        text-align: center;
+        font-size: 0.9rem;
+        font-weight: bold;
+        text-decoration: none;
+        display: inline-block;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+    }
+
+    .button-edit {
+        background-color: #28a745;
+    }
+
+    .button-edit:hover {
+        background-color: #218838;
+    }
+
+    form button {
+        background-color: #e53935;
+        padding: 10px 20px;
+        color: white;
+        border-radius: 5px;
+        font-size: 0.9rem;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    form button:hover {
+        background-color: #b71c1c;
+    }
+
+    /* 返回按鈕 */
+    .button-return {
+        background-color: #4caf50;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        text-align: center;
+        padding: 10px 20px;
+        margin: 20px auto;
+        display: block;
+        width: fit-content;
+        font-size: 1rem;
+    }
+
+    .button-return:hover {
+        background-color: #3e8e41;
+    }
+
+    /* 響應式設計 */
+    @media (max-width: 768px) {
+        table {
+            font-size: 0.9rem; /* 調整字體大小 */
+        }
+
+        th, td {
+            padding: 10px; /* 減少表格內間距 */
+        }
+
+        h2 {
+            font-size: 1.2em; /* 調整標題字體大小 */
+        }
+
+        .actions {
+            flex-direction: column; /* 垂直排列按鈕 */
+            gap: 5px;
+        }
+
+        .button, form button {
+            width: 100%; /* 按鈕在小螢幕下撐滿容器 */
+            text-align: center;
+        }
+
+        .button-return {
+            width: 90%; /* 返回按鈕在小螢幕下撐滿容器 */
+        }
+    }
+
+    footer {
+        text-align: center;
+        color: #888;
+        font-size: 0.9em;
+        margin-top: 40px;
+        padding: 20px 0;
+        background-color: #f4f4f4;
+        border-top: 1px solid #ddd;
+    }
+</style>
+
+
+</head>
+<body>
+<header>寵寵唯跡servPet </header>
+    <h2>活動公告列表</h2>
+
+    <!-- 錯誤提示 -->
+    <div th:if="${errorMsg}">
+        <p style="color: red;" th:text="${errorMsg}"></p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>公告編號</th>
+                <th>標題</th>
+                <th>內容</th>
+                <th>創建時間</th>
+                <th>修改時間</th>
+                <th>狀態</th>
+                <th class="actions">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="eventVO : ${events}">
+                <td th:text="${eventVO.infId}">公告編號</td>
+                <td th:text="${eventVO.title}">公告標題</td>
+                <td th:text="${eventVO.content}">公告內容</td>
+                <td th:text="${#dates.format(eventVO.created, 'yyyy-MM-dd HH:mm')}">創建時間</td>
+                <td th:text="${#dates.format(eventVO.updated, 'yyyy-MM-dd HH:mm')}">修改時間</td>
+                <td>
+    				<span th:if="${eventVO.infType == 0}">最新消息</span>
+    				<span th:if="${eventVO.infType == 1}">常見QA</span>
+    				<span th:if="${eventVO.infType == 2}">專欄文章</span>
+    				<span th:if="${eventVO.infType == 99}">下架</span>
+				</td>
+                <td>
+                    <a th:href="@{/event/edit(infid=${eventVO.infId})}"class="button button-edit">編輯</a> |
+                    <form th:action="@{/event/unpublish}" method="post" style="display:inline;">
+                        <input type="hidden" name="infid" th:value="${eventVO.infId}" />
+                        <button type="submit">下架</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <a th:href="@{/event/select}"class="button button-return">返回首頁</a>
+    <footer> &copy; 2024 寵寵唯跡servPet. 保留所有權利. </footer>
+</body>
+</html>

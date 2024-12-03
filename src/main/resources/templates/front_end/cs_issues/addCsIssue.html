@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>客服表單</title>
+<style>
+header {
+	background: linear-gradient(45deg, #4caf50, #81c784);
+	padding: 15px 20px;
+	color: white;
+	text-align: center;
+	font-size: 1.8em;
+	font-weight: bold;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+body {
+	font-family: Arial, sans-serif;
+	background-color: #f9f9f9;
+	margin: 0;
+	padding: 0;
+}
+
+.container {
+	max-width: 800px;
+	margin: 50px auto;
+	background: white;
+	padding: 20px;
+	border-radius: 8px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+	text-align: center;
+	color: #333;
+	margin-bottom: 20px;
+}
+
+label {
+	display: block;
+	margin-top: 15px;
+	font-weight: bold;
+}
+
+textarea, input {
+	width: 100%;
+	padding: 10px;
+	margin-top: 10px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	font-size: 1rem;
+}
+
+.button-group {
+	margin-top: 20px;
+	text-align: center;
+}
+
+button {
+	background-color: #4caf50;
+	color: white;
+	border: none;
+	padding: 10px 20px;
+	font-size: 1rem;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+button:hover {
+	background-color: #45a049;
+}
+
+footer {
+	margin-top: 40px;
+	text-align: center;
+	color: #888;
+	font-size: 0.9em;
+}
+</style>
+</head>
+<body>
+	<header>寵寵唯跡servPet </header>
+	<div class="container">
+		<h1>客服表單</h1>
+		<form th:action="@{/member/cs-issues/insert}" method="post">
+			<!-- 顯示會員名稱 -->
+			<div class="form-group">
+				<label for="memberName">會員:</label> <input id="memberName"
+					type="text" name="memberName" readonly th:value="${member.mebName}" />
+			</div>
+			<div class="form-group">
+				<label for="memberEmail">Email:</label> <input id="memberEmail"
+					type="text" name="member.mebMail" readonly
+					th:value="${member.mebMail}" />
+			</div>
+
+			<!-- 問題內容 -->
+			<div class="form-group">
+				<label for="qaContent">問題內容</label>
+				<textarea id="qaContent" name="qaContent" required
+					placeholder="請輸入問題內容..."></textarea>
+			</div>
+
+			<!-- 提交按鈕 -->
+			<div class="button-group">
+				<button type="submit">提交問題</button>
+			</div>
+		</form>
+	</div>
+	<footer> &copy; 2024 寵寵唯跡servPet. 保留所有權利. </footer>
+</body>
+</html>

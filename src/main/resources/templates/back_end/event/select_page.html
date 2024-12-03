@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>EventAnn: Home</title>
+    <style>
+    	
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        table#table-1 {
+        width: 100%;
+        background-color: #81c784;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        border: 3px ridge gray;
+        text-align: center;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+        h3 {
+	        text-align: center;
+			margin-bottom: 20px;
+            color: white;
+            font-size: 30px;
+        }
+        
+        h4, h5 {
+            color: #333;
+        }
+
+        .error-message {
+            color: red;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .error-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .error-list li {
+            color: red;
+            padding: 5px 0;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        form b {
+            font-size: 1.2em;
+        }
+
+        input[type="text"], select {
+            padding: 8px;
+            margin: 10px 0;
+            width: 100%;
+            box-sizing: border-box;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .logo-image {
+            width: auto;
+            height: auto;
+            max-width: 50%;
+        }
+        footer {
+			margin-top: 40px;
+			text-align: center;
+			color: #888;
+			font-size: 0.9em;
+		}
+    </style>
+</head>
+<body>
+
+
+    <table id="table-1">
+        <tr>
+            <td>
+                <h3>寵寵唯跡servPet</h3>
+                <h6>
+                    <img class="logo-image" th:src="@{/images/OBTQ.jpg}" alt="OBTQ"> 
+                </h6>
+            </td>
+        </tr>
+    </table>
+
+    <p>This is the Home page for EventAnn: Home</p>
+
+    <h5>資料查詢:</h5>
+
+    <!-- 顯示錯誤訊息 -->
+    <div th:if="${errorMsgs != null}">
+        <div class="error-message">
+            請修正以下錯誤:
+            <ul class="error-list">
+                <li th:each="message : ${errorMsgs}" th:text="${message}"></li>
+            </ul>
+        </div>
+    </div>
+
+    <ul>
+        <li>
+            <a th:href="@{/event/list}">List</a> all Events. <br><br>
+        </li>
+
+        <li>
+    <!-- 錯誤提示 -->
+    <div th:if="${errorMsg}" style="color: red; font-weight: bold; margin-bottom: 10px;">
+        <p th:text="${errorMsg}"></p>
+    </div>
+
+    <!-- 表單 -->
+    <form method="get" th:action="@{/event/display}" style="margin-top: 10px;">
+        <b>輸入活動公告編號 (如14000~14999):</b><br>
+        <input 
+            type="number" 
+            name="infid" 
+            placeholder="請輸入活動公告編號" 
+            min="14000" 
+            max="14999" 
+            required 
+            style="width: 300px; padding: 10px; font-size: 1rem; margin: 10px 0; border-radius: 5px; border: 1px solid #ccc;">
+        <input 
+            type="submit" 
+            value="送出" 
+            style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-size: 1rem; cursor: pointer;">
+    </form>
+</li>
+
+
+
+        <li>
+            <form method="get" th:action="@{/event/display}">
+                <b>選擇活動公告編號:</b>
+                <select name="infid" required>
+                    <option value="" disabled selected>請選擇活動公告編號</option>
+                    <option th:each="eventVO : ${events}" th:value="${eventVO.infId}" th:text="${eventVO.infId}"></option>
+                </select>
+                <input type="submit" value="送出">
+            </form>
+        </li>
+
+        <li>
+            <form method="get" th:action="@{/event/display}">
+                <b>選擇活動公告標題:</b>
+                <select name="infid" required>
+                    <option value="" disabled selected>請選擇活動公告標題</option>
+                    <option th:each="eventVO : ${events}" th:value="${eventVO.infId}" th:text="${eventVO.title}"></option>
+                </select>
+                <input type="submit" value="送出">
+            </form>
+        </li>
+    </ul>
+
+ 
+	<br>
+    <ul>
+        <li>
+            <a th:href="@{/event/addPage}">Add</a> a new Event.
+        </li>
+    </ul>
+	<footer> &copy; 2024 寵寵唯跡servPet. 保留所有權利. </footer>
+</body>
+</html>

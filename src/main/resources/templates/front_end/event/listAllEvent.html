@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>活動公告</title>
+    <style>
+        /* 全局樣式 */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        header {
+            background: linear-gradient(45deg, #4caf50, #81c784);
+            padding: 20px;
+            color: white;
+            text-align: center;
+            font-size: 1.8em;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .event-card {
+            background: #ffffff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .event-card h2 {
+            font-size: 1.5em;
+            color: #4caf50;
+            margin: 0 0 10px;
+        }
+
+        .event-card p {
+            font-size: 1rem;
+            color: #555;
+            margin: 5px 0;
+        }
+
+        .event-card time {
+            display: block;
+            font-size: 0.9rem;
+            color: #888;
+            margin: 10px 0;
+        }
+
+        .event-card a {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            color: white;
+            background-color: #4caf50;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .event-card a:hover {
+            background-color: #388e3c;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px 0;
+            color: #888;
+            font-size: 0.9em;
+            margin-top: 20px;
+            background-color: #f4f4f4;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <header>寵寵唯跡servPet</header>
+    <div class="container">
+        <h1>活動公告</h1>
+        <div th:each="event : ${events}" class="event-card">
+            <h2 th:text="${event.title}">活動標題</h2>
+            <p th:text="${event.content}">這是一個簡要的活動描述，吸引顧客的眼球。</p>
+            <time th:text="${#dates.format(event.created, 'yyyy-MM-dd HH:mm')}">2024-12-01 14:30</time>
+            <a th:href="@{/member/event/display(infid=${event.infId})}">查看詳細</a>
+
+        </div>
+    </div>
+    <footer>&copy; 2024 寵寵唯跡servPet. 保留所有權利.</footer>
+</body>
+</html>

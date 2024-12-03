@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>提交完成</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        min-height: 100vh;
+    }
+
+    header {
+        width: 100%;
+        background: linear-gradient(45deg, #4caf50, #81c784);
+        padding: 15px 20px;
+        color: white;
+        text-align: center;
+        font-size: 1.8em;
+        font-weight: bold;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        position: sticky;
+        top: 0;
+    }
+
+    .container {
+        max-width: 1000px;
+      	background: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin: 50px auto;
+
+    }
+
+    h1 {
+        color: #4caf50;
+        margin-bottom: 20px;
+    }
+
+    p {
+        font-size: 1rem;
+        color: #555;
+        margin-bottom: 30px;
+    }
+
+    .button-group {
+        text-align: center;
+    }
+
+    button {
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 1rem;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+
+    footer {
+        width: 100%;
+        padding: 10px 0;
+        text-align: center;
+        color: #888;
+        font-size: 0.9em;
+        margin-top: auto;
+    }
+</style>
+</head>
+<body>
+    <header>寵寵唯跡servPet</header>
+    <div class="container">
+        <h1>提交成功！</h1>
+        <p>您的問題已提交完成，平台回覆會以 Email 通知您，請留意您的信箱。</p>
+        <div class="button-group">
+            <button onclick="redirectToList()">查看我的問題</button>
+        </div>
+    </div>
+    <footer>&copy; 2024 寵寵唯跡servPet. 保留所有權利.</footer>
+
+    <script>
+        function redirectToList() {
+            window.location.href = '/member/cs-issues/list'; // 修改为列表页面路径
+        }
+    </script>
+</body>
+</html>
