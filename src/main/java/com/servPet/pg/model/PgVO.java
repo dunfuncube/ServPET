@@ -44,12 +44,11 @@ public class PgVO implements java.io.Serializable {
 
 	@Column(name = "PG_NAME", nullable = false)
 	@NotEmpty(message = "姓名請勿空白")
-	@Pattern(regexp = "^[(\u4e00-\u9fa5)(a-zA-Z)]{2,10}$", message = "員工姓名: 只能是中、英文字母、數字和_ , 且長度必需在2到10之間")
 	private String pgName;
 
 	@Lob
 	@Column(name = "PG_LICENSES", nullable = false)
-	@NotEmpty(message = "證件照請勿空白")
+//	@NotEmpty(message = "證件照請勿空白")
 	private byte[] pgLicenses;
 
 	@Lob
@@ -138,8 +137,12 @@ public class PgVO implements java.io.Serializable {
 		return schDate;
 	}
 
+//	public void setSchDate(String schDate) {
+//		this.schDate = schDate;
+//	}
+
 	public void setSchDate(String schDate) {
-		this.schDate = schDate;
+		this.schDate = schDate.matches("[01]{7}") ? schDate : "0000000"; // 驗證格式
 	}
 
 	public String getSchTime() {
@@ -147,8 +150,12 @@ public class PgVO implements java.io.Serializable {
 	}
 
 	public void setSchTime(String schTime) {
-		this.schTime = schTime;
+		this.schTime = schTime.matches("[01]{3}") ? schTime : "000";
 	}
+
+//	public void setSchTime(String schTime) {
+//		this.schTime = schTime;
+//	}
 
 	public String getPgStatus() {
 		return pgStatus;

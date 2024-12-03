@@ -12,8 +12,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "PET_GROOMER_ORDER_DETAIL")
@@ -32,5 +30,31 @@ public class PgOddVO implements java.io.Serializable {
 	@OneToOne
 	@JoinColumn(name = "SVC_PRICE")
 	private PgSvcVO pgSvcVO;
+
+	public PgOrderVO getPgOrderVO() {
+		return pgOrderVO;
+	}
+
+	public void setPgOrderVO(PgOrderVO pgOrderVO) {
+		this.pgOrderVO = pgOrderVO;
+	}
+
+	public PgSvcItemVO getPgSvcItemVO() {
+		return pgSvcItemVO;
+	}
+
+	public void setPgSvcItemVO(PgSvcItemVO pgSvcItemVO) {
+		this.pgSvcItemVO = pgSvcItemVO;
+	}
+
+	public PgSvcVO getPgSvcVO() {
+		return pgSvcVO;
+	}
+
+	public void setPgSvcVO(PgSvcVO pgSvcVO) {
+		this.pgSvcVO = pgSvcVO;
+	}
+	
+	
 
 }
