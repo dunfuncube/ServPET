@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>問題詳情</title>
+<style>
+body {
+	font-family: 'Arial', sans-serif;
+	margin: 0;
+	padding: 0;
+	background-color: #f9f9f9;
+	color: #333;
+}
+
+header {
+	background: linear-gradient(45deg, #4caf50, #81c784);
+	padding: 15px 20px;
+	color: white;
+	text-align: center;
+	font-size: 1.8em;
+	font-weight: bold;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.form-container {
+	background-color: white;
+	margin: 30px auto;
+	padding: 25px;
+	border-radius: 12px;
+	max-width: 800px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+	text-align: center;
+	color: #333;
+	margin-bottom: 20px;
+}
+
+.detail-item {
+	margin-bottom: 15px;
+}
+
+.detail-item strong {
+	display: inline-block;
+	width: 180px;
+	font-weight: bold;
+	color: #555;
+}
+
+.detail-item span {
+	color: #555;
+}
+
+.back-link {
+	display: block;
+	width: 180px;
+	margin: 30px auto;
+	padding: 10px 20px;
+	background-color: #4caf50;
+	color: white;
+	text-align: center;
+	text-decoration: none;
+	border-radius: 8px;
+	font-size: 1em;
+	font-weight: bold;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.back-link:hover {
+	background-color: #388e3c;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+footer {
+	margin-top: 40px;
+	text-align: center;
+	color: #888;
+	font-size: 0.9em;
+}
+</style>
+</head>
+<body>
+	<header>寵寵唯跡servPet </header>
+	<div class="form-container">
+		<h1>客服表單</h1>
+
+		<!-- 客服表單編號 -->
+		<div class="detail-item">
+			<strong>客服表單編號：</strong> <span th:text="${csIssueVO.csQaId}">未提供編號</span>
+		</div>
+
+		<!-- 顧客編號 -->
+		<div class="detail-item">
+			<strong>顧客編號：</strong> <span th:text="${csIssueVO.mebId.mebId}">未提供編號</span>
+		</div>
+
+		<!-- 顧客姓名 -->
+		<div class="detail-item">
+			<strong>顧客姓名：</strong> <span th:text="${csIssueVO.mebId.mebName}">未提供姓名</span>
+		</div>
+
+		<!-- 問題內容 -->
+		<div class="detail-item">
+			<strong>內容：</strong> <span th:if="${csIssueVO.qaContent != null}"
+				th:text="${csIssueVO.qaContent}">無內容</span> <span
+				th:if="${csIssueVO.qaContent == null}">無內容</span>
+		</div>
+
+		<!-- 問題狀態 -->
+		<div class="detail-item">
+			<strong>狀態：</strong> <span th:if="${csIssueVO.qaSta == '0'}">未處理</span>
+			<span th:if="${csIssueVO.qaSta == '1'}">已回覆</span>
+		</div>
+
+		<!-- 提交日期 -->
+		<div class="detail-item">
+			<strong>提交日期：</strong> <span th:if="${csIssueVO.qaDate != null}"
+				th:text="${#temporals.format(csIssueVO.qaDate, 'yyyy-MM-dd HH:mm:ss')}">無日期</span>
+			<span th:if="${csIssueVO.qaDate == null}">無日期</span>
+		</div>
+
+		<!-- 平台管理員編號 -->
+		<div class="detail-item">
+			<strong>平台管理員編號：</strong> <span
+				th:text="${csIssueVO.adminId?.adminId ?: '尚無負責管理員'}"></span>
+		</div>
+
+		<!-- 回覆內容 -->
+		<div class="detail-item">
+			<strong>回覆內容：</strong> <span
+				th:text="${csIssueVO.reContent ?: '尚未回覆'}"></span>
+		</div>
+
+		<!-- 回覆時間 -->
+		<div class="detail-item">
+			<strong>回覆時間：</strong> <span th:if="${csIssueVO.reDate != null}"
+				th:text="${#temporals.format(csIssueVO.reDate, 'yyyy-MM-dd HH:mm:ss')}">尚未記錄</span>
+			<span th:if="${csIssueVO.reDate == null}">尚未記錄</span>
+		</div>
+
+		<!-- 返回按鈕 -->
+		<a class="back-link" th:href="@{/cs-issues/list}">返回問題列表</a>
+	</div>
+
+	<footer> &copy; 2024 寵寵唯跡servPet. 保留所有權利. </footer>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>回覆問題</title>
+<style>
+ header {
+            background: linear-gradient(45deg, #4caf50, #81c784);
+            padding: 15px 20px;
+            color: white;
+            text-align: center;
+            font-size: 1.8em;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+body {
+	font-family: Arial, sans-serif;
+	background-color: #f9f9f9;
+	margin: 0;
+	padding: 0;
+}
+
+.container {
+	max-width: 800px;
+	margin: 50px auto;
+	background: white;
+	padding: 20px;
+	border-radius: 8px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+	text-align: center;
+	color: #333;
+	margin-bottom: 20px;
+}
+
+p {
+	font-size: 1rem;
+	color: #555;
+	line-height: 1.6;
+}
+
+label {
+	display: block;
+	margin-top: 20px;
+	font-weight: bold;
+	color: #333;
+}
+
+textarea {
+	width: 100%;
+	height: 100px;
+	padding: 10px;
+	margin-top: 10px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	font-size: 1rem;
+	color: #555;
+}
+
+textarea:focus {
+	border-color: #007bff;
+	outline: none;
+}
+
+.button-group {
+	margin-top: 20px;
+	text-align: center;
+}
+
+button {
+	background-color: #007bff;
+	color: white;
+	border: none;
+	padding: 10px 20px;
+	font-size: 1rem;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+button:hover {
+	background-color: #0056b3;
+}
+
+.back-link {
+	display: inline-block;
+	margin-top: 20px;
+	text-decoration: none;
+	font-size: 0.9rem;
+	color: #007bff;
+}
+
+.back-link:hover {
+	text-decoration: underline;
+}
+footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #888;
+            font-size: 0.9em;
+        }
+</style>
+</head>
+<body>
+	<header>寵寵唯跡servPet </header>
+	<div class="container">
+		<h1>回覆問題</h1>
+		<form th:action="@{/cs-issues/reply}" method="post">
+			<!-- 隱藏字段：客服表單編號 -->
+			<input type="hidden" name="csQaId" th:value="${csIssueVO.csQaId}" />
+
+			<!-- 問題內容 -->
+			<p>
+				<strong>問題內容：</strong>
+			</p>
+			<p th:text="${csIssueVO.qaContent}">無問題內容</p>
+
+			<!-- 回覆內容 -->
+			<label for="reContent">回覆內容：</label>
+			<textarea id="reContent" name="reContent" required
+				placeholder="請輸入您的回覆..."></textarea>
+
+			<!-- 提交按鈕 -->
+			<div class="button-group">
+				<button type="submit">提交回覆</button>
+			</div>
+		</form>
+		<!-- 返回問題列表 -->
+		<div class="button-group">
+			<a class="back-link" th:href="@{/cs-issues/list}">返回問題列表</a>
+		</div>
+	</div>
+	<footer> &copy; 2024 寵寵唯跡servPet. 保留所有權利. </footer>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>活動公告詳細資訊</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(45deg, #4caf50, #81c784);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.8em;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        h1 {
+            color: #4caf50;
+            text-align: center;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1rem;
+            margin: 10px 0;
+            line-height: 1.8;
+            color: #555;
+        }
+
+        p strong {
+            color: #333;
+        }
+
+        .highlight {
+            font-weight: bold;
+            color: #4caf50;
+        }
+
+        .back-link {
+            display: block;
+            width: fit-content;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-link:hover {
+            background-color: #388e3c;
+        }
+
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #888;
+            font-size: 0.9em;
+            padding: 20px 0;
+            background-color: #f4f4f4;
+            border-top: 1px solid #ddd;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5em;
+            }
+
+            p {
+                font-size: 0.9rem;
+            }
+
+            .container {
+                padding: 15px;
+                margin: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>寵寵唯跡servPet</header>
+<div class="container">
+    <h1>活動公告詳細資訊</h1>
+    <p><strong>標題:</strong> <span th:text="${eventVO.title}" class="highlight">活動標題</span></p>
+    <p><strong>內容:</strong> <span th:text="${eventVO.content}">活動內容</span></p>
+    <p><strong>類型:</strong>
+        <span class="highlight" th:if="${eventVO.infType == 0}">最新消息</span>
+        <span class="highlight" th:if="${eventVO.infType == 1}">常見問題</span>
+        <span class="highlight" th:if="${eventVO.infType == 2}">專欄文章</span>
+    </p>
+    <p><strong>建立時間:</strong> <span th:text="${#dates.format(eventVO.created, 'yyyy-MM-dd HH:mm')}">2024-11-30 10:00:00</span></p>
+    <p><strong>更新時間:</strong> <span th:text="${#dates.format(eventVO.updated, 'yyyy-MM-dd HH:mm')}">2024-11-30 12:00:00</span></p>
+</div>
+<a th:href="@{/member/event/list}" class="back-link">返回活動公告列表</a>
+<footer>&copy; 2024 寵寵唯跡servPet. 保留所有權利.</footer>
+</body>
+</html>

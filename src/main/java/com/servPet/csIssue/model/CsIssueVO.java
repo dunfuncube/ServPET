@@ -145,16 +145,16 @@ public class CsIssueVO {
 		this.qaSta = qaSta;
 	}
 
-	@Override
-	public String toString() {
-	    return "CsIssueVO [csQaId=" + csQaId +
-	            ", qaContent=" + qaContent +
-	            ", qaDate=" + qaDate +
-	            ", reContent=" + reContent +
-	            ", reDate=" + reDate +
-	            ", qaSta=" + qaSta +
-	            ", mebId=" + (mebId != null ? mebId.getMebId() : "null") +
-	            ", adminId=" + (adminId != null ? adminId.getAdminId() : "null") +
-	            "]";
-	}
+//	@Override
+//	public String toString() {
+//	    return "CsIssueVO [csQaId=" + csQaId +
+//	            ", qaContent=" + qaContent +
+//	            ", qaDate=" + qaDate +
+//	            ", reContent=" + reContent +
+//	            ", reDate=" + reDate +
+//	            ", qaSta=" + qaSta +
+//	            ", mebId=" + (mebId != null ? mebId.getMebId() : "null") +
+//	            ", adminId=" + (adminId != null ? adminId.getAdminId() : "null") +
+//	            "]";
+//	}
 }

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>客服表單列表</title>
+    <style>
+        header {
+            background: linear-gradient(45deg, #4caf50, #81c784);
+            padding: 15px 20px;
+            color: white;
+            text-align: center;
+            font-size: 1.8em;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 5px 0;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .button-view {
+            background-color: #007bff;
+        }
+
+        .button-reply {
+            background-color: #28a745;
+        }
+
+        .button:hover {
+            opacity: 0.8;
+        }
+
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .pagination li {
+            margin: 0 5px;
+        }
+
+        .pagination a {
+            padding: 8px 12px;
+            text-decoration: none;
+            color: #007bff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .pagination .active a {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .pagination .disabled a {
+            color: #ccc;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <header>寵寵唯跡servPet </header>
+    <h1>客服表單列表</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>客服表單編號</th>
+                <th>顧客編號</th>
+                <th>顧客姓名</th>
+                <th>平台管理員編號</th>
+                <th>諮詢內容</th>
+                <th>諮詢時間</th>
+                <th>回覆內容</th>
+                <th>回覆時間</th>
+                <th>狀態</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="issue : ${issues}">
+                <td th:text="${issue.csQaId}"></td>
+                <td th:text="${issue.mebId.mebId}"></td>
+                <td th:text="${issue.mebId.mebName}"></td>
+                <td th:text="${issue.adminId?.adminId ?: '未指定'}"></td>
+                <td th:text="${issue.qaContent}"></td>
+                <td th:text="${issue.qaDate != null ? #temporals.format(issue.qaDate, 'yyyy-MM-dd HH:mm:ss') : '尚未記錄'}"></td>
+                <td th:text="${issue.reContent ?: '尚未回覆'}"></td>
+                <td th:text="${issue.reDate != null ? #temporals.format(issue.reDate, 'yyyy-MM-dd HH:mm:ss') : '尚未記錄'}"></td>
+                <td th:text="${issue.qaSta == '0' ? '未處理' : '已回覆'}"></td>
+                <td>
+                    <a th:href="@{/cs-issues/view/{id}(id=${issue.csQaId})}" class="button button-view">查看</a>
+                    <a th:href="@{/cs-issues/addReply/{id}(id=${issue.csQaId})}" class="button button-reply">回覆</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+  <div th:if="${totalPages > 1}">
+    <nav>
+        <ul class="pagination">
+            <!-- 上一页 -->
+            <li th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                <a th:href="@{/cs-issues/list(size=${size}, page=${currentPage - 1})}">上一頁</a>
+            </li>
+            <!-- 页码 -->
+            <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                th:classappend="${currentPage == i ? 'active' : ''}">
+                <a th:href="@{/cs-issues/list(size=${size}, page=${i})}" th:text="${i + 1}"></a>
+            </li>
+            <!-- 下一页 -->
+            <li th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                <a th:href="@{/cs-issues/list(size=${size}, page=${currentPage + 1})}">下一页</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+
+    <footer>&copy; 2024 寵寵唯跡servPet. 保留所有權利.</footer>
+</body>
+</html>
