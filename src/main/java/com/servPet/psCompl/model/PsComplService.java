@@ -24,12 +24,12 @@ public class PsComplService {
     private SessionFactory sessionFactory;
 
     // 新增檢舉 (Add a new complaint)
-    public void addPsCompl(PsComplVO<?> psComplVO) {
+    public void addPsCompl(PsComplVO psComplVO) {
         psComplRepository.save(psComplVO);  // 使用 JPA psComplRepository 進行儲存
     }
 
     // 處理文件上傳 (Handle file upload)
-    public void handleFileUpload(PsComplVO<?> psComplVO, MultipartFile[] files) throws IOException {
+    public void handleFileUpload(PsComplVO psComplVO, MultipartFile[] files) throws IOException {
         // 檢查每個檔案並將它們存儲到對應的屬性中
         for (int i = 0; i < files.length; i++) {
             if (files[i] != null && !files[i].isEmpty()) {
@@ -56,13 +56,13 @@ public class PsComplService {
 
     // 更新檢舉 (Update a complaint)
     @Transactional
-    public void updatePsCompl(PsComplVO<?> psComplVO) {
-        // 确保数据库中相关的 `psComplDate` 字段在更新时不丢失
+    public void updatePsCompl(PsComplVO psComplVO) {
+        // 确保数据库中相关的 psComplDate 字段在更新时不丢失
         psComplRepository.save(psComplVO);  // 使用 JPA psComplRepository 進行儲存
     }
 
     // 根據 PS_COMPL_ID 查詢單一檢舉 (Get one complaint by PS_COMPL_ID)
-    public PsComplVO<?> getOnePsCompl(Integer psComplId) {
+    public PsComplVO getOnePsCompl(Integer psComplId) {
         Optional<PsComplVO> optional = psComplRepository.findById(psComplId);
         return optional.orElse(null);  // 如果存在，返回該檢舉，否則返回 null
     }
@@ -103,4 +103,3 @@ public class PsComplService {
         return psComplRepository.findAll();  // 假設你有一個 repository 處理資料查詢
     }
 }
-

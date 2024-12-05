@@ -3,8 +3,8 @@ package com.servPet.psCompl.controller;
 import com.servPet.psCompl.model.PsComplVO;
 import com.servPet.meb.model.MebService;
 import com.servPet.meb.model.MebVO;
-import com.servPet.psSvc.model.PsRepository;
-import com.servPet.psSvc.model.PsService;
+import com.servPet.ps.model.PsRepository;
+import com.servPet.ps.model.PsService;
 import com.servPet.ps.model.PsVO;
 import com.servPet.psCompl.model.PsComplService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,12 +41,12 @@ public class PsComplController {
     @GetMapping("addPsCompl")
     public String addPsCompl(ModelMap model) {
         // 修改为传递正确的属性名称，确保表单能够绑定
-        model.addAttribute("psComplVO", new PsComplVO<Object>());
+        model.addAttribute("psComplVO", new PsComplVO());
         return "back_end/psCompl/addPsCompl";  // 返回新增頁面
     }
     
     @PostMapping("insert")
-    public String insertPsCompl(@Valid PsComplVO<?> psComplVO, BindingResult result,
+    public String insertPsCompl(@Valid PsComplVO psComplVO, BindingResult result,
                                  @RequestParam(value = "upFiles", required = false) MultipartFile[] files,
                                  @RequestParam(value = "mebId", required = true) Integer mebId,  // 添加 mebId 參數
                                  @RequestParam(value = "psId", required = true) Integer psId,    // 添加 psId 參數
@@ -87,12 +87,12 @@ public class PsComplController {
         // 調用 Service 層的新增方法，將資料保存到資料庫
         psComplSvc.addPsCompl(psComplVO);
         model.addAttribute("success", "檢舉提交成功");
-		model.addAttribute("psComplListData",psComplSvc.getAll());
+  model.addAttribute("psComplListData",psComplSvc.getAll());
         return "redirect:/psCompl/listAllPsCompl";  // 成功後跳轉到檢舉列表頁面
     }
 
 
-	// 顯示單一檢舉資料
+ // 顯示單一檢舉資料
     @PostMapping("getOne_For_Display")
     public String getOneForDisplay(@RequestParam("psComplId") String psComplIdStr, ModelMap model) {
         if (psComplIdStr == null || !psComplIdStr.matches("\\d+")) {
@@ -102,7 +102,7 @@ public class PsComplController {
         Integer psComplId = Integer.parseInt(psComplIdStr);
 
         // 查詢檢舉資料
-        PsComplVO<?> psComplVO = psComplSvc.getOnePsCompl(psComplId);
+        PsComplVO psComplVO = psComplSvc.getOnePsCompl(psComplId);
         if (psComplVO == null) {
             model.addAttribute("errorMessage", "無此檢舉資料");
             return "back_end/psCompl/listAllPsCompl";  // 無此檢舉資料返回列表頁面
@@ -124,18 +124,18 @@ public class PsComplController {
     // 顯示更新檢舉頁面
     @PostMapping("getOne_For_Update")
     public String getOneForUpdate(@RequestParam("psComplId") String psComplId, ModelMap model) {
-        PsComplVO<?> PsComplVO = psComplSvc.getOnePsCompl(Integer.valueOf(psComplId));
+        PsComplVO PsComplVO = psComplSvc.getOnePsCompl(Integer.valueOf(psComplId));
         model.addAttribute("psComplVO", PsComplVO);  // 修改为正确的属性名称
         return "back_end/psCompl/update_psCompl_input";  // 返回更新檢舉頁面
     }
 
     // 更新檢舉資料
     @PostMapping("update")
-    public String update(@Valid PsComplVO<?> psComplVO, BindingResult result, ModelMap model) {
+    public String update(@Valid PsComplVO psComplVO, BindingResult result, ModelMap model) {
         System.out.println("Before update PsComplDate: " + psComplVO.getPsComplDate());
 
         // 从数据库重新加载 PsComplVO，确保获取到完整的 psComplDate 等信息
-        PsComplVO<?> updatedPsComplVO = psComplSvc.getOnePsCompl(psComplVO.getPsComplId());
+        PsComplVO updatedPsComplVO = psComplSvc.getOnePsCompl(psComplVO.getPsComplId());
         if (updatedPsComplVO == null) {
             model.addAttribute("error", "找不到檢舉資料，請稍後再試！");
             return "back_end/psCompl/list";  // 如果未找到资料，跳转回列表页

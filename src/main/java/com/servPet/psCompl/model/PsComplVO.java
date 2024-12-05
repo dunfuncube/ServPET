@@ -19,11 +19,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * 實體類別對應資料表 PET_SITTER_COMPLAINT
- * 
- * 註1: classpath必須有javax.persistence-api-x.x.jar
- * 註2: Annotation 可以添加在屬性上，也可以添加在 getXxx() 方法上
+
+
 
 
 @Entity  // 表示該類別是一個 JPA 實體
@@ -47,14 +44,14 @@ public class PsComplVO implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "PS_ID", referencedColumnName = "PS_ID", insertable=false, updatable=false, nullable = false)
-    private PsVO psVO;  // 代表保母編號，對應 `PET_SITTER` 表格
+    private PsVO psVO;  // 代表保母編號，對應 PET_SITTER 表格
 
     @Column(name = "PS_ID")
     private Integer psId;  // 只保存 psId，而不需要加載 PsVO
     
     @ManyToOne
     @JoinColumn(name = "MEB_ID", referencedColumnName = "MEB_ID",insertable=false, updatable=false, nullable = false)
-    private MebVO mebVO;  // 代表會員編號，對應 `MEMBER` 表格
+    private MebVO mebVO;  // 代表會員編號，對應 MEMBER 表格
     
     @Column(name = "MEB_ID")
     private Integer mebId;  // 只保存 mebId，而不需要加載 MebVO
