@@ -131,7 +131,7 @@ public class PgComplController {
 	}
 
 	@PostMapping("insert")
-	public String insertPgCompl(@Valid PgComplVO<?> pgComplVO, BindingResult result,
+	public String insertPgCompl(@Valid PgComplVO pgComplVO, BindingResult result,
 			@RequestParam(value = "upFiles", required = false) MultipartFile[] files,
 			@RequestParam(value = "mebId", required = true) Integer mebId, // 添加 mebId 參數
 			@RequestParam(value = "pgId", required = true) Integer pgId, // 添加 pgId 參數
@@ -195,14 +195,14 @@ public class PgComplController {
 		}
 
 		model.addAttribute("pgComplVO", pgComplVO);
-		return "redirect:/back_end/pgCompl/listOnePgCompl"; // 返回顯示單一檢舉資料頁面
+		return "back_end/pgCompl/listOnePgCompl"; // 返回顯示單一檢舉資料頁面
 	}
 
 	// 顯示更新檢舉頁面
 	@PostMapping("getOne_For_Update")
 	public String getOneForUpdate(@RequestParam("pgComplId") String pgComplId, ModelMap model,HttpSession session) {
 		SaveSession(model, session);
-		PgComplVO<?> pgComplVO = pgComplSvc.getOnePgCompl(Integer.valueOf(pgComplId));
+		PgComplVO pgComplVO = pgComplSvc.getOnePgCompl(Integer.valueOf(pgComplId));
 		if (pgComplVO != null) {
 			// 在這裡將當前的 pgComplStatus 先保存到 previousPgComplStatus，這樣可以在後面進行比較
 			pgComplVO.setPreviousPgComplStatus(pgComplVO.getPgComplStatus());
@@ -210,19 +210,35 @@ public class PgComplController {
 		model.addAttribute("pgComplVO", pgComplVO); // 修改为正确的属性名称
 		return "back_end/pgCompl/update_pgCompl_input"; // 返回更新檢舉頁面
 	}
-
-	// 更新檢舉資料
+	
+	//============ 更 新 ============//
 	@PostMapping("update")
 	public String update(@Valid PgComplVO pgComplVO, BindingResult result, 
-			ModelMap model,HttpSession session,RedirectAttributes redirectAttributes) {
+	        ModelMap model,HttpSession session,RedirectAttributes redirectAttributes) {
+	    
 	    SaveSession(model, session);
-	    System.out.println("Before update PgComplDate: " + pgComplVO.getPgComplDate());
 
 	    // 從資料庫重新載入 PgComplVO，確保取得完整的 pgComplDate 等資料
 	    PgComplVO updatedPgComplVO = pgComplSvc.getOnePgCompl(pgComplVO.getPgComplId());
 	    if (updatedPgComplVO == null) {
 	        model.addAttribute("error", "找不到檢舉資料，請稍後再試！");
 	        return "back_end/pgCompl/list"; // 如果找不到資料，跳轉回列表頁面
+	    }
+	    
+	    if (pgComplVO.getPgComplUpfiles1() == null || pgComplVO.getPgComplUpfiles1()==null) {
+	        pgComplVO.setPgComplUpfiles1(updatedPgComplVO.getPgComplUpfiles1());  // 保持資料庫中的圖片路徑
+	    }
+	    
+	    if (pgComplVO.getPgComplUpfiles2() == null || pgComplVO.getPgComplUpfiles2()==null) {
+	        pgComplVO.setPgComplUpfiles2(updatedPgComplVO.getPgComplUpfiles2());  // 保持資料庫中的圖片路徑
+	    }
+	    
+	    if (pgComplVO.getPgComplUpfiles3() == null || pgComplVO.getPgComplUpfiles3()==null) {
+	        pgComplVO.setPgComplUpfiles3(updatedPgComplVO.getPgComplUpfiles3());  // 保持資料庫中的圖片路徑
+	    }
+	    
+	    if (pgComplVO.getPgComplUpfiles4() == null || pgComplVO.getPgComplUpfiles4()==null) {
+	        pgComplVO.setPgComplUpfiles4(updatedPgComplVO.getPgComplUpfiles4());  // 保持資料庫中的圖片路徑
 	    }
 
 	    // 如果表單驗證失敗，返回更新頁面並保留現有的錯誤信息與資料

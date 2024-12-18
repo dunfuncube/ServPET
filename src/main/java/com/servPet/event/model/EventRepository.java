@@ -19,5 +19,7 @@ public interface EventRepository extends JpaRepository<EventVO, Integer> {
  
  // 查詢比指定時間晚的公告
  List<EventVO> findByCreatedAfter(Timestamp createdTime);
+ 
+ 
 
 }

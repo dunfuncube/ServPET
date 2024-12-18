@@ -52,6 +52,10 @@ public class LoginController {
     public String login(@ModelAttribute AdminVO adminVO, HttpSession session, Model model) {
         AdminVO admin = adminSvc.login(adminVO.getAdminAcc(), adminVO.getAdminPwd());
 
+        if (admin.getAdminAcc() == null) {
+            model.addAttribute("errorMessage", "您的帳號狀態未知，請聯絡管理員。");
+            return "back_end/login"; // 返回登入頁面，顯示錯誤訊息
+        }
         
         if (admin != null) {
             if (admin.getAdminAccStatus().equals("0")) {  // 假設 0 表示停權狀態
@@ -77,16 +81,22 @@ public class LoginController {
     	PgVO pg = pgSvc.login(pgVO.getPgId(), pgVO.getPgPw());
 
         if (pg != null) {
+        	
+            if (pg.getPgStatus() == null) {
+                model.addAttribute("errorMessage", "您的帳號狀態未知，請聯絡管理員。");
+                return "back_end/login"; // 返回登入頁面，顯示錯誤訊息
+            }
+            
             if (pg.getPgStatus().equals("2")) {  // 假設 0 表示停權狀態
                 model.addAttribute("errorMessage", "您的帳號已停用，請聯絡管理員。");
-                return "back_end/toPgLogin"; // 返回登入頁面，顯示停用訊息
+                return "back_end/login"; // 返回登入頁面，顯示停用訊息
             }
             session.setAttribute("pgVO", pg); // 登入成功，保存用戶信息到 session
             System.out.println("pgVO: " + session.getAttribute("pgVO"));
             return "redirect:/pg/listOnePg_back?pgId=" +pg.getPgId(); // 重定向到首頁
         } else {
             model.addAttribute("errorMessage", "信箱或密碼錯誤，請重新嘗試。"); // 登入失敗
-            return "back_end/toPgLogin"; // 返回登入頁面
+            return "back_end/login"; // 返回登入頁面
         }		
     }
     
@@ -100,17 +110,22 @@ public class LoginController {
         }
     	
     	PsVO ps = psSvc.login(psVO.getPsId(), psVO.getPsPw());
-
+    	
+        if (ps.getPsStatus() == null) {
+            model.addAttribute("errorMessage", "您的帳號狀態未知，請聯絡管理員。");
+            return "back_end/login"; // 返回登入頁面，顯示錯誤訊息
+        }
+        
         if (ps != null) {
             if (ps.getPsStatus().equals("2")) {  // 假設 0 表示停用狀態
                 model.addAttribute("errorMessage", "您的帳號已停用，請聯絡管理員。");
-                return "back_end/toPsLogin"; // 返回登入頁面，顯示停用訊息
+                return "back_end/login"; // 返回登入頁面，顯示停用訊息
             }
             session.setAttribute("psVO", ps); // 登入成功，保存用戶信息到 session
             return "redirect:/ps/profile/"+ps.getPsId(); // 重定向到首頁
         } else {
             model.addAttribute("errorMessage", "帳號或密碼錯誤，請重新嘗試。"); // 登入失敗
-            return "back_end/toPsLogin"; // 返回登入頁面
+            return "back_end/login"; // 返回登入頁面
         }
     }
     	@GetMapping("/pg/listOnePg")
@@ -119,7 +134,7 @@ public class LoginController {
         PgVO pg = (PgVO) session.getAttribute("pgVO");
 
         if (pg == null) {
-            return "redirect:/back_end/toPgLogin"; // 如果未登入，重定向到登入頁面
+            return "redirect:/back_end/login"; // 如果未登入，重定向到登入頁面
         }
 
         // 如果 PgVO 存在，將其放入 model 以便 Thymeleaf 使用

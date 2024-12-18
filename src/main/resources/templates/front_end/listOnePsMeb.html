@@ -38,7 +38,7 @@
         </div>
         <!-- 收藏按鈕 -->
         <div class="favorite-button">
-            <button type="button" th:onclick="addFavorite(${psVO.psId})"  class="btn-favorite">收藏</button>
+            <a th:href="@{/favorites/add}" class="btn-favorite">收藏</a>
         </div>
         <!-- 保母詳細資料 -->
         <table class="details">

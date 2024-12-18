@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.servPet.meb.model.MebVO;
 import com.servPet.ntfy.model.NtfyVO;
 
 @Repository
@@ -33,6 +34,8 @@ public interface NtfyRepository extends JpaRepository<NtfyVO, Integer> {
     @Query("UPDATE NtfyVO n SET n.status = 1 WHERE n.mebVO.mebId = :mebId AND n.status = 0")
     void updateAllUnreadToRead(@Param("mebId") Integer mebId);
 
+    @Query("SELECT m FROM MebVO m")
+    List<MebVO> findAllMembers(); // 查詢所有會員
     
 }
 

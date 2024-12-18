@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.servPet.meb.model.MebRepository;
 import com.servPet.meb.model.MebService;
 import com.servPet.meb.model.MebVO;
 import com.servPet.pgFav.model.PgFavService;
@@ -29,34 +30,40 @@ public class PgFavController {
     @Autowired
     private MebService mebService;
     
+    @Autowired
+    private MebRepository mebRepository;
+    
     // 查詢全部美容師收藏
     @GetMapping("/list")
     public String listFavorites(Model model, Principal principal) {
         boolean isLoggedIn = (principal != null);
-        model.addAttribute("pgFavList", pgFavService.getAllFavorites());
+        String mail = principal.getName();
+        Optional<MebVO> mebOptional = mebRepository.findByMebMail(mail);
+        Integer mebId = mebOptional.get().getMebId();
+        model.addAttribute("pgFavList", pgFavService.findByMebVO_MebId(mebId));
         return "front_end/pgFav/listAllPgFav"; // 對應 /templates/front_end//pdFav/listAllPgFav.html
     }
 
 //    @PostMapping("/add")
 //    @ResponseBody
 //    public String addFavorite(HttpSession session, @RequestParam Integer pgId,Principal principal) {
-//    	
-//    	/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
+//     
+//     /*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
 ////        // 假設已取得 mebVO 和 pgVO，並傳遞進來
 ////        MebVO mebVO = new MebVO();
 ////        PgVO pgVO = new PgVO();
 ////        mebVO.setMebId(mebId);
 ////        pgVO.setPgId(pgId);
-//    	
-//    	// 從 session 中取得已登入的會員資訊
-////    	MebVO mebVO = (MebVO) session.getAttribute("mebVO");
-//    	Optional<MebVO> OptionalmebVO = mebService.findMemberByEmail(principal.getName());
-//    	// 檢查 session 是否有會員資訊
+//     
+//     // 從 session 中取得已登入的會員資訊
+////     MebVO mebVO = (MebVO) session.getAttribute("mebVO");
+//     Optional<MebVO> OptionalmebVO = mebService.findMemberByEmail(principal.getName());
+//     // 檢查 session 是否有會員資訊
 //        if (OptionalmebVO == null) {
-//    		System.out.println("未登入用戶觸發收藏，pgId: " + pgId);
-//    		return "請先登入會員";
+//      System.out.println("未登入用戶觸發收藏，pgId: " + pgId);
+//      return "請先登入會員";
 //        }
-////    	System.out.println("已登入會員ID: " + mebVO.getMebId() + ", 美容師ID: " + pgId);
+////     System.out.println("已登入會員ID: " + mebVO.getMebId() + ", 美容師ID: " + pgId);
 //        
 //        /*************************** 2.開始新增資料 *****************************************/
 ////        String result = pgFavService.addFavorite(mebVO, pgVO);
