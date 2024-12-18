@@ -54,7 +54,7 @@ public class PgVO implements java.io.Serializable {
 	private String schTime;
 
 	@Column(name = "PG_STATUS")
-	private String pgStatus;
+	private String pgStatus="0";
 
 	@Column(name = "PG_BIO")
 	private String pgBio;
@@ -68,13 +68,13 @@ public class PgVO implements java.io.Serializable {
 	private String pgEmail;
 
 	@Column(name = "TOTAL_STARS")
-	private Integer totalStars;
+	private Integer totalStars=0;
 
 	@Column(name = "RATING_TIMES")
-	private Integer ratingTimes;
+	private Integer ratingTimes=0;
 
 	@Column(name = "REPORT_TIMES")
-	private Integer reportTimes;
+	private Integer reportTimes=0;
 
 	@Column(name = "APPROVAL_STATUS")
 	private String approvalStatus;

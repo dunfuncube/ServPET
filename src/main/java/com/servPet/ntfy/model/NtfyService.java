@@ -1,17 +1,17 @@
 package com.servPet.ntfy.model;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.servPet.meb.model.MebVO;
-import com.servPet.event.model.EventVO;
-import com.servPet.ntfy.model.NtfyVO;
 import com.servPet.event.model.EventRepository;
-import com.servPet.ntfy.model.NtfyRepository;
+import com.servPet.event.model.EventVO;
+import com.servPet.meb.model.MebVO;
 
 @Service
 public class NtfyService {
@@ -22,6 +22,39 @@ public class NtfyService {
     @Autowired
     private EventRepository eventRepository;
     
+    private LocalDateTime lastCheckedTime = LocalDateTime.now(); // 記錄上次檢查時間
+    // 定時檢查新公告（每 1 分鐘）
+    @Scheduled(fixedRate = 60000)
+    public void checkNewEventsAndNotify() {
+        System.out.println("正在檢查新活動公告...");
+
+        // 1. 查詢所有比上次檢查時間晚的公告
+        List<EventVO> newEvents = eventRepository.findByCreatedAfter(Timestamp.valueOf(lastCheckedTime));
+
+        if (!newEvents.isEmpty()) {
+            // 2. 查詢所有會員
+            List<MebVO> allMembers = ntfyRepository.findAllMembers(); // 自定義方法
+
+            for (EventVO event : newEvents) {
+                for (MebVO member : allMembers) {
+                    // 3. 為每個會員新增通知
+                    NtfyVO ntfyVO = new NtfyVO();
+                    ntfyVO.setTitle("活動公告通知"); // 標題
+                    ntfyVO.setContent(event.getTitle() + "：" + event.getContent()); // 內容
+                    ntfyVO.setDate(new Timestamp(System.currentTimeMillis())); // 當前時間
+                    ntfyVO.setStatus(0); // 設為未讀
+                    ntfyVO.setMebVO(member); // 關聯會員
+
+                    ntfyRepository.save(ntfyVO); // 儲存通知
+                }
+            }
+            // 4. 更新最後檢查時間
+            lastCheckedTime = LocalDateTime.now();
+//            System.out.println("新公告通知已發送給所有會員");
+        } else {
+//            System.out.println("沒有新的公告");
+        }
+    }
 
     // 獲取公告的所有資料
     public List<EventVO> getEventAll(Integer infId) {

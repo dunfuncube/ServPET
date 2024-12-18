@@ -23,6 +23,11 @@ public class PgFavService {
     @Autowired
     private PgRepository pgRepository;
     
+ public List<PgFavVO> findByMebVO_MebId(Integer mebId){
+  return pgFavRepository.findByMebVO_MebId(mebId);
+ }
+
+    
     // 取得所有收藏美容師列表
     public List<PgFavVO> getAllFavorites() {
         return pgFavRepository.findAll(); // 使用 JpaRepository 的內建方法

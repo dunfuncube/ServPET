@@ -1,9 +1,13 @@
 package com.servPet.sitterFav.controller;
 
+import java.security.Principal;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.servPet.meb.model.MebService;
+import com.servPet.meb.model.MebVO;
 import com.servPet.sitterFav.model.FavoRedisService;
 import com.servPet.sitterFav.model.SitterFavRepository;
 import com.servPet.sitterFav.model.SitterFavService;
@@ -34,6 +40,8 @@ public class SitterFavController {
     @Autowired
     private FavoRedisService favoRedisService;
 
+	@Autowired
+	private MebService mebService;
     
     
     /**
@@ -54,6 +62,19 @@ public class SitterFavController {
             ? ResponseEntity.ok("收藏已成功加入！")
             : ResponseEntity.status(400).body("收藏加入失敗，可能已存在！");
     }
+
+    
+//    @PostMapping("/add")
+//    @ResponseBody
+//    public String addFavorite(HttpSession session, @RequestParam Integer psId, Principal principal) {
+//        Optional<MebVO> optionalMebVO = mebService.findMemberByEmail(principal.getName());
+//        if (!optionalMebVO.isPresent()) {
+//            return "請先登入會員";
+//        }
+//        MebVO mebVO = optionalMebVO.get();
+//        String result = sitterFavService.addFavorite(mebVO.getMebId(), psId);
+//        return result; // 傳回成功或失敗的訊息
+//    }
 
     /**
      * 獲取收藏列表（包含詳細信息）

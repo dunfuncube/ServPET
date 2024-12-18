@@ -7,7 +7,6 @@ import com.servPet.adminPer.model.AdminPerService;
 import com.servPet.adminPer.model.AdminPerVO;
 import com.servPet.meb.model.MebService;
 import com.servPet.meb.model.MebVO;
-import com.servPet.pgCompl.model.PgComplVO;
 import com.servPet.ps.model.PsRepository;
 import com.servPet.ps.model.PsService;
 import com.servPet.ps.model.PsVO;
@@ -213,108 +212,125 @@ public class PsComplController {
 	}
 
 	// 更新檢舉資料
-	@PostMapping("update")
-	public String update(@Valid PsComplVO psComplVO, BindingResult result, 
-			ModelMap model,HttpSession session,RedirectAttributes redirectAttributes) {
-	    SaveSession(model, session);
-	    System.out.println("Before update PsComplDate: " + psComplVO.getPsComplDate());
+		@PostMapping("update")
+		public String update(@Valid PsComplVO psComplVO, BindingResult result, 
+				ModelMap model,HttpSession session,RedirectAttributes redirectAttributes) {
+		    SaveSession(model, session);
+		    System.out.println("Before update PsComplDate: " + psComplVO.getPsComplDate());
 
-	    // 從資料庫重新載入 PsComplVO，確保取得完整的 psComplDate 等資料
-	    PsComplVO updatedPsComplVO = psComplSvc.getOnePsCompl(psComplVO.getPsComplId());
-	    if (updatedPsComplVO == null) {
-	        model.addAttribute("error", "找不到檢舉資料，請稍後再試！");
-	        return "back_end/psCompl/list"; // 如果找不到資料，跳轉回列表頁面
-	    }
+		    // 從資料庫重新載入 PsComplVO，確保取得完整的 pgComplDate 等資料
+		    PsComplVO updatedPsComplVO = psComplSvc.getOnePsCompl(psComplVO.getPsComplId());
+		    if (updatedPsComplVO == null) {
+		        model.addAttribute("error", "找不到檢舉資料，請稍後再試！");
+		        return "back_end/psCompl/list"; // 如果找不到資料，跳轉回列表頁面
+		    }
+		    
+		    if (psComplVO.getPsComplUpfiles1() == null || psComplVO.getPsComplUpfiles1()==null) {
+		        psComplVO.setPsComplUpfiles1(updatedPsComplVO.getPsComplUpfiles1());  // 保持資料庫中的圖片路徑
+		    }
+		    
+		    if (psComplVO.getPsComplUpfiles2() == null || psComplVO.getPsComplUpfiles2()==null) {
+		        psComplVO.setPsComplUpfiles2(updatedPsComplVO.getPsComplUpfiles2());  // 保持資料庫中的圖片路徑
+		    }
+		    
+		    if (psComplVO.getPsComplUpfiles3() == null || psComplVO.getPsComplUpfiles3()==null) {
+		        psComplVO.setPsComplUpfiles3(updatedPsComplVO.getPsComplUpfiles3());  // 保持資料庫中的圖片路徑
+		    }
+		    
+		    if (psComplVO.getPsComplUpfiles4() == null || psComplVO.getPsComplUpfiles4()==null) {
+		        psComplVO.setPsComplUpfiles4(updatedPsComplVO.getPsComplUpfiles4());  // 保持資料庫中的圖片路徑
+		    }
 
-	    // 如果表單驗證失敗，返回更新頁面並保留現有的錯誤信息與資料
-	    if (result.hasErrors()) {
-	        model.addAttribute("psComplVO", updatedPsComplVO);
-	        model.addAttribute("psComplVO", psComplVO); // 保留錯誤信息與使用者輸入的資料
-	        return "back_end/psCompl/update_psCompl_input"; // 返回更新頁面
-	    }
+		    // 如果表單驗證失敗，返回更新頁面並保留現有的錯誤信息與資料
+		    if (result.hasErrors()) {
+		        model.addAttribute("psComplVO", updatedPsComplVO);
+		        model.addAttribute("psComplVO", psComplVO); // 保留錯誤信息與使用者輸入的資料
+		        return "back_end/psCompl/update_psCompl_input"; // 返回更新頁面
+		    }
 
-	    // 保證 psComplDate 不變，除非使用者明確修改
-	    psComplVO.setPsComplDate(updatedPsComplVO.getPsComplDate()); // 保持資料庫中的 psComplDate 值不變
+		    // 保證 pgComplDate 不變，除非使用者明確修改
+		    psComplVO.setPsComplDate(updatedPsComplVO.getPsComplDate()); // 保持資料庫中的 pgComplDate 值不變
 
-	    // 設定更新處理時間
-	    psComplVO.setPsComplResDate(LocalDateTime.now());
+		    // 設定更新處理時間
+		    psComplVO.setPsComplResDate(LocalDateTime.now());
 
-	    // ------------------ 添加記點更新邏輯 ------------------
-	    // 取得目前的 psId
-	    Integer psId = psComplVO.getPsId();
+		    // ------------------ 添加記點更新邏輯 ------------------
+		    // 取得目前的 pgId
+		    Integer psId = psComplVO.getPsId();
 
-	    // 取得目前 PS 物件
-	    PsVO psVO = psSvc.getOnePs(psId);
+		    // 取得目前 PG 物件
+		    PsVO psVO = psSvc.getOnePs(psId);
 
-	    if (psVO != null) {
-	        // 取得原本的 REPORT_TIMES（即原始的記點）
-	        int originalPoints = psVO.getReportTimes(); // 假設 REPORT_TIMES 是 psVO 的一個欄位
-	        // 取得原始的懲處狀態
-	        String previousStatus = updatedPsComplVO.getPsComplStatus(); // 假設之前的懲處狀態保存在 updatedPsComplVO 中
+		    if (psVO != null) {
+		        // 取得原本的 REPORT_TIMES（即原始的記點）
+		    	int originalPoints = psVO.getReportTimes();
+		    	
+		        // 取得原始的懲處狀態
+		        String previousStatus = updatedPsComplVO.getPsComplStatus(); // 假設之前的懲處狀態保存在 updatedPgComplVO 中
 
-	        // 更新檢舉資料
-	        psComplSvc.updatePsCompl(psComplVO);
+		        // 更新檢舉資料
+		        psComplSvc.updatePsCompl(psComplVO);
 
-	        // 取得新的懲處狀態
-	        String currentStatus = psComplVO.getPsComplStatus(); // 當前狀態來自於提交的表單
+		        // 取得新的懲處狀態
+		        String currentStatus = psComplVO.getPsComplStatus(); // 當前狀態來自於提交的表單
 
-	        // 根據狀態變更計算點數變化
-	        int pointsToChange = calculatePointsDifference(previousStatus, currentStatus);
+		        // 根據狀態變更計算點數變化
+		        int pointsToChange = calculatePointsDifference(previousStatus, currentStatus);
 
-	        // 更新 REPORT_TIMES（記點）
-	        int newPoints = originalPoints + pointsToChange;
-	        psVO.setReportTimes(newPoints); // 更新 PS 的 REPORT_TIMES
-	        
-	        // 計算是否需要改變狀態
-	        if (newPoints >= 5 && originalPoints < 5) {
-	            psVO.setPsStatus("2");  // 停權
-	            adminSvc.sendSuspensionEmailPs(psVO); // 發送停權通知郵件
-	            model.addAttribute("message", "已發送停權通知郵件");
-	        } else if (originalPoints >= 5 && newPoints < 5) {
-	            psVO.setPsStatus("0");  // 休業
-	        }
+		        // 更新 REPORT_TIMES（記點）
+		        int newPoints = originalPoints + pointsToChange;
+		        psVO.setReportTimes(newPoints); // 更新 PG 的 REPORT_TIMES
+		        
+		        // 計算是否需要改變狀態
+		        if (newPoints >= 5 && originalPoints < 5) {
+		            psVO.setPsStatus("2");  // 停權
+		            adminSvc.sendSuspensionEmailPs(psVO); // 發送停權通知郵件
+		            model.addAttribute("message", "已發送停權通知郵件");
+		        } else if (originalPoints >= 5 && newPoints < 5) {
+		            psVO.setPsStatus("0");  // 休業
+		        }
 
-	        // 呼叫 adminService 更新會員點數
-	        adminSvc.updatePsReportTimes(psVO); // 呼叫 adminService 來更新 PS 的報告點數
-	    }
+		        // 呼叫 adminService 更新會員點數
+		        adminSvc.updatePsReportTimes(psVO); // 呼叫 adminService 來更新 PG 的報告點數
+		    }
 
-	    // 顯示修改成功訊息
-	    model.addAttribute("success", "- (修改成功)");
+		    // 顯示修改成功訊息
+		    model.addAttribute("success", "- (修改成功)");
 
-	    // 更新後重新查詢並保持 psComplVO 到模型中
-	    psComplVO = psComplSvc.getOnePsCompl(psComplVO.getPsComplId());
-	    model.addAttribute("psComplVO", psComplVO); // 保持 psComplVO 到模型中
-	    
-	    // 跳轉到顯示單一檢舉頁面，並帶上 psComplId
-	    return "back_end/psCompl/listOnePsCompl";
-	}
-
-	// 計算點數差異的方法
-	private int calculatePointsDifference(String previousStatus, String currentStatus) {
-	    int previousPoints = getStatusPoints(previousStatus);
-	    int currentPoints = getStatusPoints(currentStatus);
-	    System.out.println("currentPoints=" + currentPoints);
-	    System.out.println("previousPoints=" + previousPoints);
-	    return currentPoints - previousPoints; // 返回點數差異
-	}
-
-	// 狀態映射
-	private int getStatusPoints(String status) {
-		switch (status) {
-		case "0":
-			return 0;
-		case "1":
-			return 0;
-		case "2":
-			return 1;
-		case "3":
-			return 3;
-		case "4":
-			return 5;
-		default:
-			return 0;
+		    // 更新後重新查詢並保持 pgComplVO 到模型中
+		    psComplVO = psComplSvc.getOnePsCompl(psComplVO.getPsComplId());
+		    model.addAttribute("psComplVO", psComplVO); // 保持 pgComplVO 到模型中
+		    
+		    // 跳轉到顯示單一檢舉頁面，並帶上 pgComplId
+		    return "back_end/psCompl/listOnePsCompl";
 		}
-	}
+		
+		// 計算點數差異的方法
+		private int calculatePointsDifference(String previousStatus, String currentStatus) {
+		    int previousPoints = getStatusPoints(previousStatus);
+		    int currentPoints = getStatusPoints(currentStatus);
+		    System.out.println("currentPoints=" + currentPoints);
+		    System.out.println("previousPoints=" + previousPoints);
+		    return currentPoints - previousPoints; // 返回點數差異
+		}
+
+		// 狀態映射
+		private int getStatusPoints(String status) {
+			switch (status) {
+			case "0":
+				return 0;
+			case "1":
+				return 0;
+			case "2":
+				return 1;
+			case "3":
+				return 3;
+			case "4":
+				return 5;
+			default:
+				return 0;
+			}
+		}
 	
 	
 	// 查詢所有檢舉資料
