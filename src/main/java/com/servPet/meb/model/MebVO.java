@@ -10,7 +10,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
-import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -31,8 +30,8 @@ public class MebVO implements Serializable {
     private Integer mebId;
 
     @NotBlank(message = "名字不可為空")
-    @Size(min = 2, max = 10, message = "名字長度應在 2 到 10 之間")
-    @Column(name = "MEB_NAME", nullable = false, length = 10)
+    @Size(min = 2, max = 20, message = "名字長度應在 2 到 20 之間")
+    @Column(name = "MEB_NAME", nullable = false, length = 20)
     private String mebName;
 
     @Email(message = "請輸入有效的電子郵件")
@@ -41,16 +40,16 @@ public class MebVO implements Serializable {
     private String mebMail;
 
     @NotBlank(message = "密碼不可為空")
-    @Pattern(
-            regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d!@#$%^&*()_+]{6,16}$",
-            message = "密碼必須為長度6~16位，至少包含英文字母和數字，可包含特殊符號"
-        )
+//    @Pattern(
+//            regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d!@#$%^&*()_+]{6,16}$",
+//            message = "密碼必須為長度6~16位，至少包含英文字母和數字，可包含特殊符號"
+//        )
     @Column(name = "MEB_PWD", nullable = false)
     private String mebPwd;
 
     @Size(max = 5, message = "狀態長度不能超過 5 字")
     @Column(name = "MEB_STATUS", length = 5)
-    private String mebStatus;
+    private String mebStatus ="未認證";
 
     @Size(max = 100, message = "地址長度不能超過 100 字")
     @Column(name = "MEB_ADDRESS", length = 100)
@@ -60,8 +59,8 @@ public class MebVO implements Serializable {
     @Column(name = "MEB_PHONE", length = 15)
     private String mebPhone;
 
-    @Pattern(regexp = "^(M|F|O)$", message = "性別只能是 M (男性), F (女性), 或 O (其他)")
-    @Column(name = "MEB_SEX", length = 2)
+    @Size(max = 5, message = "性別長度不能超過 5 字")
+    @Column(name = "MEB_SEX", length = 5)
     private String mebSex;
 
     @Column(name = "BAL", nullable = false)
@@ -72,21 +71,13 @@ public class MebVO implements Serializable {
     @Column(name = "MEB_IMG")
     private byte[] mebImg;
 
-    @PrePersist
-    public void prePersist() {
-        if (this.mebStatus == null) {
-            this.mebStatus = "未激活"; // 設定默認狀態
-        }
-        if (this.bal == null) {
-            this.bal = 0.0; // 設定默認餘額
-        }
-    }//確保bal可以初始化。
+    
 
-	public MebVO() {
-		super();
-		
-	}
-
+    public MebVO() {
+        super();
+        this.mebStatus = "未認證";
+        this.bal = 0.0;
+    }
 	public Integer getMebId() {
 		return mebId;
 	}
@@ -169,8 +160,9 @@ public class MebVO implements Serializable {
 
 	@Override
 	public String toString() {
-		return "MebVO [mebId=" + mebId + ", mebName=" + mebName + ", mebMail=" + mebMail 
-				+ ", mebStatus=" + mebStatus + ", mebAddress=" + mebAddress + ", mebPhone=" + mebPhone + ", mebSex="
-				+ mebSex + ", bal=" + bal ;
+	    return "MebVO [mebId=" + mebId + ", mebName=" + mebName + ", mebMail=" + mebMail 
+	            + ", mebStatus=" + mebStatus + ", mebAddress=" + mebAddress + ", mebPhone=" + mebPhone + ", mebSex="
+	            + mebSex + ", bal=" + bal + "]";
 	}
+
 }

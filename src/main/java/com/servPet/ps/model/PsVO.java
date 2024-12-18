@@ -1,13 +1,13 @@
 package com.servPet.ps.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import java.io.Serial;
-
 
 @Entity
 @NoArgsConstructor
@@ -22,7 +22,10 @@ public class PsVO implements java.io.Serializable {
 	@Column(name = "PS_ID", nullable = false)
 	private Integer psId;
 
-	@Column(name = "PS_NAME", nullable = false, length = 50)
+
+
+
+	@Column(name = "PS_NAME",length = 50)
 	@NotEmpty(message = "姓名請勿空白")
 	@Pattern(regexp = "^[(\u4e00-\u9fa5)(a-zA-Z)]{2,50}$", message = "保母姓名: 只能是中、英文字母，且長度必需在2到50之間")
 	private String psName;
@@ -30,6 +33,7 @@ public class PsVO implements java.io.Serializable {
 	@Column(name = "PS_LICENSES")
 	private byte[] psLicenses;
 
+	@Lob
 	@Column(name = "PS_PIC")
 	private byte[] psPic;
 
@@ -37,13 +41,13 @@ public class PsVO implements java.io.Serializable {
 	@NotEmpty(message = "請選取可服務地區")
 	private String psArea;
 
-	@Column(name = "SCH_DATE", nullable = false, length = 7)
+	@Column(name = "SCH_DATE")
 	private String schDate;
 
-	@Column(name = "SCH_TIME", nullable = false, length = 3)
+	@Column(name = "SCH_TIME")
 	private String schTime;
 
-	@Column(name = "PS_STATUS", nullable = false, length = 1)
+	@Column(name = "PS_STATUS")
 	private String psStatus;
 
 	@Column(name = "PS_BIO", length = 300)
@@ -68,6 +72,10 @@ public class PsVO implements java.io.Serializable {
 
 	@Column(name = "APPROVAL_STATUS", nullable = false, length = 1)
 	private String approvalStatus;
+
+	public PsVO(Integer psId) {
+		this.psId = psId;
+	}
 
 	public Integer getPsId() {
 		return psId;

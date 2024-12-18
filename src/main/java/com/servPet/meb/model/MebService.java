@@ -1,77 +1,97 @@
 package com.servPet.meb.model;
 
-import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import java.util.List;//新增的import(學雍)
 
 @Service
 public class MebService {
+    private final MebRepository mebRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private MebRepository mebRepository;
-    
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
-
-    // 新增會員
-    public void addMember(MebVO member) {
-        System.out.println("嘗試新增會員：" + member);
-        if (mebRepository.findByMebMail(member.getMebMail()).isPresent()) {
-            throw new IllegalArgumentException("Email 已被使用");
-        }
-        mebRepository.save(member);
-        System.out.println("會員新增成功：" + member);
+    public MebService(MebRepository mebRepository, PasswordEncoder passwordEncoder) {
+        this.mebRepository = mebRepository;
+        this.passwordEncoder = passwordEncoder;
     }
-
-
-    // 查詢所有會員
-    public List<MebVO> getAllMembers() {
+    
+    // 查詢所有(學雍.會員停權)
+    public List<MebVO> getAll() {
         return mebRepository.findAll();
     }
-
-    // 根據 ID 查詢會員
-    public Optional<MebVO> getMemberById(Integer id) {
-        return mebRepository.findById(id);
+    
+    // 根據會員編號查詢檢舉 (Get complaints by PS_ID)(學雍.美容師保母檢舉)
+    public MebVO getByMebId(Integer mebId) {
+        return mebRepository.findMemberById(mebId);  // 根據保母編號查詢檢舉
     }
 
-    // 根據 Email 查詢會員
-    public Optional<MebVO> getMemberByEmail(String email) {
-        return mebRepository.findByMebMail(email);
-    }
-
-    // 更新會員資訊
-    public MebVO updateMember(MebVO member) {
-        validateMember(member);
-
-        if (!mebRepository.existsById(member.getMebId())) {
-            throw new MemberNotFoundException("會員不存在");
+    // 註冊會員
+    public MebVO registerMember(MebVO member) {
+        if (mebRepository.findByMebMail(member.getMebMail()).isPresent()) {
+            throw new IllegalArgumentException("電子郵件已被註冊");
         }
+        member.setMebPwd(passwordEncoder.encode(member.getMebPwd()));
         return mebRepository.save(member);
     }
 
-    // 刪除會員
-    @Transactional
-    public void deleteMember(Integer id) {
-        if (!mebRepository.existsById(id)) {
-            throw new MemberNotFoundException("會員不存在");
+    // 根據電子郵件查找會員
+    public Optional<MebVO> findMemberByEmail(String email) {
+        return mebRepository.findByMebMail(email);
+    }
+    // 更新會員資料
+    public MebVO updateMember(MebVO updatedMember) {
+        // 查詢現有會員資料
+        MebVO existingMember = mebRepository.findByMebMail(updatedMember.getMebMail())
+                .orElseThrow(() -> new IllegalArgumentException("會員不存在，無法更新"));
+
+        // 合併更新的欄位
+        if (updatedMember.getMebName() != null) {
+            existingMember.setMebName(updatedMember.getMebName());
         }
-        mebRepository.deleteById(id);
+        if (updatedMember.getMebAddress() != null) {
+            existingMember.setMebAddress(updatedMember.getMebAddress());
+        }
+        if (updatedMember.getMebPhone() != null) {
+            existingMember.setMebPhone(updatedMember.getMebPhone());
+        }
+        if (updatedMember.getMebImg() != null) {
+            existingMember.setMebImg(updatedMember.getMebImg());
+        }
+
+        // 處理密碼更新（需要加密）
+        if (updatedMember.getMebPwd() != null 
+                && !passwordEncoder.matches(updatedMember.getMebPwd(), existingMember.getMebPwd())) {
+            existingMember.setMebPwd(passwordEncoder.encode(updatedMember.getMebPwd()));
+        }
+
+        // 保存更新後的會員資料
+        return mebRepository.save(existingMember);
+    }
+    public MebVO getMemberById(Integer mebId) {
+        return mebRepository.findMemberById(mebId);
     }
 
-    // 驗證會員對象
-    private void validateMember(MebVO member) {
-        if (member == null || member.getMebMail() == null || member.getMebMail().isEmpty()) {
-            throw new IllegalArgumentException("會員資料不完整，Email 不能為空");
-        }
-        if (member.getMebPwd() == null || member.getMebPwd().isEmpty()) {
-            throw new IllegalArgumentException("會員資料不完整，密碼不能為空");
-        }
-        
-    }    public boolean checkPassword(String rawPassword, String encodedPassword) {
-        return passwordEncoder.matches(rawPassword, encodedPassword);
+    public void deductBalance(Integer mebId, Double amount) {
+     mebRepository.deductBalance(mebId, amount);
     }
+    
+    
+
+    public Integer getMebIdByEmail(String mebMail) {
+        return mebRepository.findMebIdByMebMail(mebMail);
+    }
+    
+    
+    public void updatePassword(Integer userId, String newPassword) {
+        Optional<MebVO> member = mebRepository.findById(userId);
+        if (member.isPresent()) {
+            MebVO meb = member.get();
+            meb.setMebPwd(newPassword); // 根據資料庫結構更新密碼
+            mebRepository.save(meb);
+        } else {
+            throw new RuntimeException("會員不存在！");
+        }
+    } 
+
 }

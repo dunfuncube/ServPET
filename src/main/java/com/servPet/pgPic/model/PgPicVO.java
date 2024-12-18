@@ -8,14 +8,9 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-
 //import com.pet_groomer.model.PetGroomerVO;
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "PET_GROOMER_PICTURE")
 public class PgPicVO implements java.io.Serializable {
 	
@@ -27,9 +22,6 @@ public class PgPicVO implements java.io.Serializable {
 	@Column(name = "PIC_ID")
 	private Integer picId;
 
-//	@ManyToOne
-//	@JoinColumn(name = "PG_ID") // 外來鍵
-//	private PgVO pgVO;
 	
 	@Column(name = "PG_ID", updatable= false)
 	private Integer pgId;
@@ -38,6 +30,11 @@ public class PgPicVO implements java.io.Serializable {
 	@Lob
 	@Column(name = "PG_SVC_PIC")
 	private byte[] pgSvcPic;
+
+	
+	public PgPicVO() {
+	
+	}
 
 	public Integer getPicId() {
 		return picId;

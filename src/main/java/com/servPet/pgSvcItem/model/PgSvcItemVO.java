@@ -9,16 +9,15 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "PET_GROOMER_SERVICE_ITEM")
 public class PgSvcItemVO implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
+
+	public PgSvcItemVO() {
+
+	}
 
 	@Id // 主鍵
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -72,10 +71,3 @@ public class PgSvcItemVO implements java.io.Serializable {
 
 }
 
-//@OneToMany(mappedBy = "pgSvcItemVO")
-//@JoinColumn(name= "PGO_ID", referencedColumnName = "SVC_ID")
-//private Set<PgOrderVO> pgOrderVO = new HashSet<PgOrderVO>();
-//@OneToMany(mappedBy = "pgSvcItemVO")
-//private Set<PgOddVO> pgOddVO = new HashSet<PgOddVO>();
-//@OneToMany(mappedBy = "pgSvcItemVO")
-//private Set<PgSvcVO> pgSvcVO = new HashSet<PgSvcVO>();

@@ -11,31 +11,22 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
-
-import com.servPet.pgPic.model.PgPicVO;
-
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "PET_GROOMER")
 public class PgVO implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
+
+	public PgVO() {
+
+	}
 
 	@Id // 主鍵
 	@GeneratedValue(strategy = GenerationType.IDENTITY) // 使用自增的方式來生成主鍵
 	@Column(name = "PG_ID", nullable = false)
 	private Integer pgId;
-
-//	@OneToMany(mappedBy = "pgVO")
-//	private List<PgPicVO> pgPicVO = new ArrayList<PgPicVO>();//有序性可重複
-
-//	@OneToMany(mappedBy = "pgVO")
-//	private Set<PgOrderVO> pgOrderVO = new HashSet<PgOrderVO>(); //無序性不可重複
 
 	@Column(name = "PG_NAME", nullable = false)
 	@NotEmpty(message = "姓名請勿空白")
@@ -132,12 +123,8 @@ public class PgVO implements java.io.Serializable {
 		return schDate;
 	}
 
-//	public void setSchDate(String schDate) {
-//		this.schDate = schDate;
-//	}
-
 	public void setSchDate(String schDate) {
-		this.schDate = schDate.matches("[01]{7}") ? schDate : "0000000"; // 驗證格式
+		this.schDate = schDate; // 驗證格式
 	}
 
 	public String getSchTime() {
@@ -145,12 +132,8 @@ public class PgVO implements java.io.Serializable {
 	}
 
 	public void setSchTime(String schTime) {
-		this.schTime = schTime.matches("[01]{3}") ? schTime : "000";
+		this.schTime = schTime;
 	}
-
-//	public void setSchTime(String schTime) {
-//		this.schTime = schTime;
-//	}
 
 	public String getPgStatus() {
 		return pgStatus;

@@ -1,119 +1,111 @@
 package com.servPet.pdFav.controller;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.RequestMapping;
+import java.security.Principal;
+import java.util.Optional;
+
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
-
+import com.servPet.meb.model.MebService;
+import com.servPet.meb.model.MebVO;
 import com.servPet.pdFav.model.PdFavService;
-import com.servPet.pdFav.model.PdFavVO;
 
 @Controller
 @RequestMapping("/pdFav")
 public class PdFavController {
 
-    @Autowired
+	@Autowired
+	private MebService mebService;
+	
+	@Autowired
     private PdFavService pdFavService;
-
-    // 會員新增收藏商品
-    @GetMapping("addPdFav")
-    public String addPdFav(ModelMap model) {
-        PdFavVO pdFavVO = new PdFavVO();
-        model.addAttribute("pdFavVO", pdFavVO);
-        return "back-end/pdFav/addPdFav";
-    }
-
-    // 新增或更新收藏商品 (表單提交)
-    @PostMapping("insert")
-    public String insert(@Valid PdFavVO pdFavVO, BindingResult result, ModelMap model) {
-        /*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
-        if (result.hasErrors()) {
-            return "back-end/pdFav/addPdFav";
-        }
-        /*************************** 2.開始新增資料 *****************************************/
-        pdFavService.addFavorite(pdFavVO);
-        /*************************** 3.新增完成,準備轉交(Send the Success view) **************/
-        List<PdFavVO> list = pdFavService.getAllFavoritesByMebId(pdFavVO.getMebVO().getMebId());
-        model.addAttribute("pdFavListData", list);
-        model.addAttribute("success", "- (新增成功)");
-        return "redirect:/pdFav/listAllPdFav";
-    }
-
-    // 查詢特定會員的所有收藏商品
-    @PostMapping("getOne_For_Update")
-    public String getOne_For_Update(@RequestParam("pdFavId") String pdFavId, ModelMap model) {
-        /*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
-        /*************************** 2.開始查詢資料 *****************************************/
-        PdFavVO pdFavVO = pdFavService.getFavoriteById(Integer.valueOf(pdFavId));
-        /*************************** 3.查詢完成,準備轉交(Send the Success view) **************/
-        model.addAttribute("pdFavVO", pdFavVO);
-        return "back-end/pdFav/update_pdFav_input";
-    }
-
-    // 更新收藏商品 (表單提交)
-    @PostMapping("update")
-    public String update(@Valid PdFavVO pdFavVO, BindingResult result, ModelMap model) {
-        /*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
-        if (result.hasErrors()) {
-            return "back-end/pdFav/update_pdFav_input";
-        }
-        /*************************** 2.開始修改資料 *****************************************/
-        pdFavService.addFavorite(pdFavVO);
-        /*************************** 3.修改完成,準備轉交(Send the Success view) **************/
-        model.addAttribute("success", "- (修改成功)");
-        pdFavVO = pdFavService.getFavoriteById(pdFavVO.getPdFavId());
-        model.addAttribute("pdFavVO", pdFavVO);
-        return "back-end/pdFav/listOnePdFav";
-    }
-
-    // 刪除收藏商品
-    @PostMapping("delete")
-    public String delete(@RequestParam("pdFavId") String pdFavId, ModelMap model) {
-        /*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
-        /*************************** 2.開始刪除資料 *****************************************/
-        pdFavService.deleteFavorite(Integer.valueOf(pdFavId));
-        /*************************** 3.刪除完成,準備轉交(Send the Success view) **************/
-        model.addAttribute("success", "- (刪除成功)");
-        return "redirect:/pdFav/listAllPdFav";
-    }
-
-    // 使用者查看自己的收藏列表
-    @PostMapping("listPdFavs_ByCompositeQuery")
-    public String listAllPdFav(HttpServletRequest req, Model model) {
-        Map<String, String[]> map = req.getParameterMap();
-        List<PdFavVO> list = pdFavService.getAllFavorites(map);
-        model.addAttribute("pdFavListData", list);
-        return "back-end/pdFav/listAllPdFav";
-    }
     
-    @GetMapping("listFavorites")
-    @ResponseBody
-    public List<Map<String, Object>> listFavorites(@RequestParam("mebId") Integer mebId) {
-        List<PdFavVO> favorites = pdFavService.getAllFavoritesByMebId(mebId);
-        List<Map<String, Object>> result = favorites.stream().map(fav -> {
-            Map<String, Object> map = new HashMap<>();
-            map.put("pdFavId", fav.getPdFavId());
-            map.put("productName", fav.getPdDetailsVO().getPdName());  // 假設 PdDetailsVO 有 pdName 欄位
-            map.put("pdFavStatus", fav.getPdFavStatus());
-            return map;
-        }).collect(Collectors.toList());
-        return result;
+	// 查詢全部美容師收藏
+    @GetMapping("/list")
+    public String listFavorites(Model model, Principal principal) {
+    	boolean isLoggedIn = (principal != null);
+        model.addAttribute("pdFavList", pdFavService.getAllFavorites());
+        return "front_end/pdFav/listAllPdFav"; // 對應 /templates/front_end//pdFav/listAllPdFav.html
     }
 
-} 
+//    @PostMapping("/add")
+//    @ResponseBody
+//    public String addFavorite(HttpSession session, @RequestParam Integer pdId,Principal princiapl) {
+//    	
+//    	/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
+////        // 取得 mebVO 和 pdDetailsVO
+////        MebVO mebVO = new MebVO();
+////        PdDetailsVO pdDetailsVO = new PdDetailsVO();
+////        mebVO.setMebId(mebId);
+////        pdDetailsVO.setPdId(pdId);
+//    	Optional<MebVO> OptionalmebVO = mebService.findMemberByEmail(princiapl.getName());
+//    	// 從 session 中取得已登入的會員資訊
+////    	MebVO mebVO = (MebVO) session.getAttribute("mebVO");
+//    	
+//    	// 檢查 session 是否有會員資訊
+//        if (OptionalmebVO == null) {
+//            return "請先登入會員";
+//        }
+//        
+//        /*************************** 2.開始新增資料 *****************************************/
+////        String result = pdFavService.addFavorite(mebVO, pdDetailsVO);
+//        MebVO member = OptionalmebVO.get();
+//        // pdId 已經從請求參數中獲得，直接傳入 Service
+//        String result = pdFavService.addFavorite(member.getMebId(), pdId);
+//        
+//        /*************************** 3.新增完成,準備返回(Send the Success view) **************/
+//        return result;  // 回傳新增成功或失敗的訊息
+//    }
+
+    
+    
+    @PostMapping("/add")
+    @ResponseBody
+    public String addFavorite(HttpSession session, @RequestParam Integer pdId, Principal principal) {
+        Optional<MebVO> optionalMebVO = mebService.findMemberByEmail(principal.getName());
+        if (!optionalMebVO.isPresent()) {
+            return "請先登入會員";
+        }
+        MebVO mebVO = optionalMebVO.get();
+        String result = pdFavService.addFavorite(mebVO.getMebId(), pdId);
+        return result; // 傳回成功或失敗的訊息
+    }
+
+    
+    
+    @PostMapping("/deleteFavorite")
+    public String deleteFavorite(@RequestParam Integer pdFavId, RedirectAttributes redirectAttributes) {
+        if (pdFavId != null) {
+            pdFavService.deleteFavoriteById(pdFavId);
+            redirectAttributes.addFlashAttribute("successMessage", "已成功取消收藏！");
+        }
+        return "redirect:/pdFav/list";
+    }
+
+    
+    
+    @GetMapping("/isFavorite")
+    @ResponseBody
+    public boolean isFavorite(@RequestParam Integer mebId, @RequestParam Integer pdId) {
+        /*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
+        // 驗證傳入的參數是否有效
+        if (mebId == null || pdId == null) {
+            return false;
+        }
+
+        /*************************** 2.開始查詢資料 *****************************************/
+        boolean isFavorite = pdFavService.checkIfFavorite(mebId, pdId).isPresent();
+
+        /*************************** 3.查詢完成,返回結果(Send the Success view) **************/
+        return isFavorite;
+    }
+}

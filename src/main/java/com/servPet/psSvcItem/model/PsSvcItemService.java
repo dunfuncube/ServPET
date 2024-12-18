@@ -19,6 +19,7 @@ public class PsSvcItemService {
 
     //新增一筆資料
     public PsSvcItemVO addPsSvcItem(PsSvcItemVO psSvcItemVO) {  //用void?
+
         return psSvcItemRepository.save(psSvcItemVO);
     }
 
@@ -46,6 +47,12 @@ public class PsSvcItemService {
         } else {
             throw new IllegalArgumentException("資料不存在，無法刪除");
         }
+    }
+
+
+    public PsSvcItemVO getSvcItemById(Integer svcId) {
+        // 假設你有一個 Repository 層處理數據庫查詢
+        return psSvcItemRepository.findById(svcId).orElse(null);
     }
 
 }

@@ -25,7 +25,7 @@ public class PsPorVO implements java.io.Serializable {
 //    @ManyToOne
 //    @JoinColumn(name = "PS_ID") // 外來鍵
 //    private PsVO psVO;
-private Integer PsId;
+private Integer psId;
     
     @Lob
     @Column(name = "PS_SVC_PIC")

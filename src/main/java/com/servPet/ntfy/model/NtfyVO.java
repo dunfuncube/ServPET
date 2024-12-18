@@ -1,12 +1,13 @@
 package com.servPet.ntfy.model;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+//import javax.validation.constraints.NotEmpty;
+//import javax.validation.constraints.NotNull;
 
 import com.servPet.meb.model.MebVO;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
+//import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "ntfy_mgmt")  
@@ -23,17 +24,17 @@ public class NtfyVO implements java.io.Serializable {
     private MebVO mebVO;
     
     @Column(name = "TITLE", nullable = false, length = 100) 
-    @NotEmpty(message="此欄不能空白")
+//    @NotEmpty(message="此欄不能空白")
     private String title;
 
     
     @Column(name = "CONTENT", nullable = false) 
-    @NotEmpty(message="此欄不能空白")
+//    @NotEmpty(message="此欄不能空白")
     private String content;
 
     @Column(name = "DATE", nullable = false)  
-    @NotNull(message="請選擇新增日期")
-    private LocalDateTime  date;  
+//    @NotNull(message="請選擇新增日期")
+    private Timestamp  date;  
 
     
     @Column(name = "STATUS", nullable = false) 
@@ -88,12 +89,12 @@ public class NtfyVO implements java.io.Serializable {
 	}
 
 
-	public LocalDateTime getDate() {
+	public Timestamp getDate() {
 		return date;
 	}
 
 
-	public void setDate(LocalDateTime date) {
+	public void setDate(Timestamp date) {
 		this.date = date;
 	}
 

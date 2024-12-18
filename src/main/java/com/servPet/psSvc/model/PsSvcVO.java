@@ -1,135 +1,38 @@
-//package com.servPet.psSvc.model;
-//
-//import com.servPet.psSvcItem.model.PsSvcItemVO;
-//import com.servPet.ps.model.PsVO;
-//import com.servPet.psOdd.model.PsOddVO;
-//import lombok.*;
-//
-//import javax.persistence.*;
-//import java.io.Serializable;
-//import java.util.HashSet;
-//import java.util.Objects;
-//import java.util.Set;
-//
-//
-//@Data
-//@NoArgsConstructor
-//@AllArgsConstructor
-//@Entity
-//@Table(name = "PET_SITTER_SERVICE")
-//
-//public class PsSvcVO implements Serializable {
-//
-//    //欄位:PS_ID SVC_ID SVC_PRICE
-//
-//
-//    //PK FK
-//    @Id
-//    @ManyToOne
-//    @JoinColumn(name = "PS_ID")
-//    private PsVO psVO;
-//
-//    //FK
-//    @ManyToOne
-//    @JoinColumn(name = "SVC_ID")
-//    private PsSvcItemVO psSvcItemVO;
-//
-//    //
-//    @Column(name = "SVC_PRICE")
-//    private Integer svcPrice;
-//
-//    @OneToMany(mappedBy = "psSvcVO")
-//    private Set<PsOddVO> psOddVO = new HashSet<PsOddVO>();
-//
-//    @Override
-//    public boolean equals(Object o) {
-//        if (o == null || getClass() != o.getClass()) return false;
-//        PsSvcVO psSvcVO = (PsSvcVO) o;
-//        return Objects.equals(psVO, psSvcVO.psVO) && Objects.equals(psSvcItemVO, psSvcVO.psSvcItemVO) && Objects.equals(svcPrice, psSvcVO.svcPrice) && Objects.equals(psOddVO, psSvcVO.psOddVO);
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(psVO, psSvcItemVO, svcPrice, psOddVO);
-//    }
-//}
-//
-
-
 
 package com.servPet.psSvc.model;
 
-import com.servPet.ps.model.PsVO;
-import com.servPet.psOdd.model.PsOddVO;
-import com.servPet.psSvcItem.model.PsSvcItemVO;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
+@ToString
 
-
-
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "PET_SITTER_SERVICE")
 public class PsSvcVO implements Serializable {
 
-    // Getters and setters
-    @EmbeddedId
-    private PsSvcId id;
 
-    @Column(name = "SVC_ID")
-    private Integer svcId;
+    @EmbeddedId
+    private PsSvcId psSvcId;
 
     @Column(name = "SVC_PRICE")
     private Integer svcPrice;
 
+    //保母的服務項目 一個保母有多個服務項目
+
 //    @OneToMany(mappedBy = "id.psSvcItemVO")
 //    private Set<PsOddVO> psOddVO = new HashSet<>();
 
-    // equals and hashCode methods
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PsSvcVO psSvcVO = (PsSvcVO) o;
-        return Objects.equals(id, psSvcVO.id);
+    public PsSvcId getPsSvcId() {
+        return psSvcId;
     }
 
-    public PsSvcVO() {
-    }
-
-    public PsSvcVO(PsSvcId id, Integer svcId, Integer svcPrice) {
-        this.id = id;
-        this.svcId = svcId;
-        this.svcPrice = svcPrice;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    public PsSvcId getId() {
-        return id;
-    }
-
-    public void setId(PsSvcId id) {
-        this.id = id;
-    }
-
-    public Integer getSvcId() {
-        return svcId;
-    }
-
-    public void setSvcId(Integer svcId) {
-        this.svcId = svcId;
+    public void setPsSvcId(PsSvcId psSvcId) {
+        this.psSvcId = psSvcId;
     }
 
     public Integer getSvcPrice() {
@@ -140,4 +43,19 @@ public class PsSvcVO implements Serializable {
         this.svcPrice = svcPrice;
     }
 
+
+    // equals and hashCode methods
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PsSvcVO psSvcVO = (PsSvcVO) o;
+        return Objects.equals(psSvcId, psSvcVO.psSvcId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(psSvcId);
+    }
 }

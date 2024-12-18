@@ -20,6 +20,11 @@ public class EventService {
         // 為 created 賦值
         eventVO.setCreated(new Timestamp(System.currentTimeMillis()));
         return eventRepository.save(eventVO);
+        
+//        EventVO savedEvent = eventRepository.save(eventVO);
+//        ntfyService.addNotificationForEvent(savedEvent);
+//
+//               return savedEvent;
     }
 
 
@@ -60,7 +65,7 @@ public class EventService {
     public void unpublishEvent(Integer infId) {
         EventVO eventVO = eventRepository.findById(infId)
                 .orElseThrow(() -> new RuntimeException("Event with ID " + infId + " not found"));
-        eventVO.setInfType(99); // 設置為下架狀態
+        eventVO.setInfType(99); // 设置为下架状态
         eventRepository.save(eventVO);
     }
 }

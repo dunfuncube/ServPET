@@ -13,74 +13,79 @@ import com.servPet.fnc.model.FncVO;
 
 public class HibernateUtil_CompositeQuery_fnc {
 
-    // This method generates a Predicate based on the column name and value
+    // 根據欄位名稱和查詢值生成對應的 Predicate
     public static Predicate get_aPredicate_For_AnyDB(CriteriaBuilder builder, Root<FncVO> root, String columnName, String value) {
         Predicate predicate = null;
 
-        // Handling different column types for dynamic query
-        if ("fncId".equals(columnName)) {  // For Integer type
+        // 檢查查詢值是否為空或 null，若是，則不生成 Predicate
+        if (value == null || value.trim().isEmpty()) {
+            return null; // 查詢值為空，直接返回 null
+        }
+
+        // 根據不同的欄位生成對應的查詢條件
+        if ("fncId".equals(columnName)) {  // 用於 Integer 類型
             predicate = builder.equal(root.get(columnName), Integer.valueOf(value));
-        } else if ("fncName".equals(columnName)) {  // For String type
+        } else if ("fncName".equals(columnName)) {  // 用於 String 類型
             predicate = builder.like(root.get(columnName), "%" + value + "%");
-        } else if ("fncDes".equals(columnName)) {  // For String type
-            predicate = builder.like(root.get(columnName), "%" + value + "%");
-        } else if ("fncAcc".equals(columnName)) {  // For String type
-            predicate = builder.like(root.get(columnName), "%" + value + "%");
-        } else if ("fncPwd".equals(columnName)) {  // For String type
-            predicate = builder.like(root.get(columnName), "%" + value + "%");
-        } else if ("upFiles".equals(columnName)) {  // For byte[] type (binary file data), no specific condition, can be left out in queries
-            // You could add logic if needed, but generally file data wouldn't be used in this way in queries
         }
 
         return predicate;
     }
 
-    // This method generates the dynamic query based on the given map of parameters
+    // 根據傳入的參數映射生成動態查詢
     @SuppressWarnings("unchecked")
     public static List<FncVO> getAllC(Map<String, String[]> map, Session session) {
         Transaction tx = session.beginTransaction();
         List<FncVO> list = null;
         try {
-            // 1. Create CriteriaBuilder
+            // 1. 創建 CriteriaBuilder
             CriteriaBuilder builder = session.getCriteriaBuilder();
-            // 2. Create CriteriaQuery
+            // 2. 創建 CriteriaQuery
             CriteriaQuery<FncVO> criteriaQuery = builder.createQuery(FncVO.class);
-            // 3. Create Root
+            // 3. 創建 Root
             Root<FncVO> root = criteriaQuery.from(FncVO.class);
 
-            // List to hold all the query predicates (conditions)
+            // 用來存放所有查詢條件 (predicates)
             List<Predicate> predicateList = new ArrayList<Predicate>();
 
-            // Retrieve the keys from the map (which represent the columns to filter by)
+            // 取得 map 中的所有鍵，這些鍵對應到需要篩選的欄位
             Set<String> keys = map.keySet();
             int count = 0;
 
-            // Iterate over the map to create the predicates based on the filter criteria
+            // 遍歷 map，根據每個篩選條件生成 Predicate
             for (String key : keys) {
                 String value = map.get(key)[0];
                 if (value != null && value.trim().length() != 0 && !"action".equals(key)) {
                     count++;
-                    // Add the predicate to the list based on the column and value
-                    predicateList.add(get_aPredicate_For_AnyDB(builder, root, key, value.trim()));
-                    System.out.println("Number of filter conditions sent: count = " + count);
+                    // 根據欄位和查詢值生成 Predicate 並加入到條件列表中
+                    Predicate predicate = get_aPredicate_For_AnyDB(builder, root, key, value.trim());
+                    if (predicate != null) {
+                        predicateList.add(predicate);
+                    }
+                    System.out.println("發送的過濾條件數量: count = " + count);
                 }
             }
 
-            System.out.println("Predicate list size: " + predicateList.size());
+            // 輸出條件列表的大小
+            System.out.println("Predicate 列表大小: " + predicateList.size());
 
-            // Apply the conditions to the CriteriaQuery
-            criteriaQuery.where(predicateList.toArray(new Predicate[0]));
-            // Default order by 'fncId' ascending
+            // 如果 predicateList 不為空，則將條件應用到 CriteriaQuery
+            if (!predicateList.isEmpty()) {
+                criteriaQuery.where(predicateList.toArray(new Predicate[0]));
+            }
+
+            // 預設依據 fncId 進行升序排序
             criteriaQuery.orderBy(builder.asc(root.get("fncId")));
 
-            // 4. Create and execute the query
+            // 4. 創建並執行查詢
             Query query = session.createQuery(criteriaQuery);
             list = query.getResultList();
 
             tx.commit();
         } catch (RuntimeException ex) {
-            if (tx != null)
+            if (tx != null) {
                 tx.rollback();
+            }
             throw ex;
         } finally {
             session.close();

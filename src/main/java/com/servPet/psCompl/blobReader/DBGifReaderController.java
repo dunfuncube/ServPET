@@ -25,7 +25,7 @@ public class DBGifReaderController {
 	/*
 	 * This method will serve as listOneEmp.html , listAllEmp.html handler.
 	 */
-	@GetMapping("DBGifReader")
+	@GetMapping("PsDBGifReader")
 	public void dBGifReader(@RequestParam("psComplId") String psComplId, HttpServletRequest req, HttpServletResponse res)
 			                                                                                          throws IOException {
 		res.setContentType("image/gif");

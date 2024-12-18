@@ -1,6 +1,6 @@
 package com.servPet.pgOrder.model;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,23 +8,22 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "PET_GROOMER_ORDER")
 public class PgOrderVO implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 
+	public PgOrderVO() {
+
+	}
+
 	@Id // 主鍵
 	@GeneratedValue(strategy = GenerationType.IDENTITY) // 使用自增的方式來生成主鍵
-	@Column(name = "PGO_ID", nullable = false)
+	@Column(name = "PGO_ID")
 	private Integer pgoId;
 
 	@Column(name = "MEB_ID", nullable = false)
@@ -34,21 +33,17 @@ public class PgOrderVO implements java.io.Serializable {
 	private Integer pgId;
 
 	@Column(name = "PET_ID", nullable = false)
-	@NotEmpty(message = "請選擇須接受服務的寵物")
 	private Integer petId;
 
-	@Column(name = "SVC_ID", nullable = false)
-	@NotEmpty(message = "請選擇要預約的美容項目")
-	private Integer svcId;
+	@Column(name = "PGSVC_ID", nullable = false)
+	private Integer pgSvcId;
 
 	@Column(name = "BOOKING_DATE", nullable = false)
-//	@Future(message="請選擇今日之後的日期")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	@NotEmpty(message = "請選擇要預約的日期")
-	private Date bookingDate;
+	@NotNull(message = "請選擇要預約的日期")
+	private LocalDate bookingDate;
 
 	@Column(name = "BOOKING_TIME", nullable = false)
-	@NotEmpty(message = "請選擇要預約的時段")
 	private String bookingTime;
 
 	@Column(name = "BOOKING_STATUS")
@@ -57,8 +52,8 @@ public class PgOrderVO implements java.io.Serializable {
 	@Column(name = "APPR_STATUS")
 	private String apprStatus;
 
-	@Column(name = "AMOUNT", nullable = false)
-	private Integer amount;
+	@Column(name = "SVC_PRICE", nullable = false)
+	private Integer svcPrice;
 
 	@Column(name = "STAR")
 	private Integer star;
@@ -101,19 +96,19 @@ public class PgOrderVO implements java.io.Serializable {
 		this.petId = petId;
 	}
 
-	public Integer getSvcId() {
-		return svcId;
+	public Integer getPgSvcId() {
+		return pgSvcId;
 	}
 
-	public void setSvcId(Integer svcId) {
-		this.svcId = svcId;
+	public void setPgSvcId(Integer pgSvcId) {
+		this.pgSvcId = pgSvcId;
 	}
 
-	public Date getBookingDate() {
+	public LocalDate getBookingDate() {
 		return bookingDate;
 	}
 
-	public void setBookingDate(Date bookingDate) {
+	public void setBookingDate(LocalDate bookingDate) {
 		this.bookingDate = bookingDate;
 	}
 
@@ -141,12 +136,12 @@ public class PgOrderVO implements java.io.Serializable {
 		this.apprStatus = apprStatus;
 	}
 
-	public Integer getAmount() {
-		return amount;
+	public Integer getSvcPrice() {
+		return svcPrice;
 	}
 
-	public void setAmount(Integer amount) {
-		this.amount = amount;
+	public void setSvcPrice(Integer svcPrice) {
+		this.svcPrice = svcPrice;
 	}
 
 	public Integer getStar() {
@@ -173,20 +168,19 @@ public class PgOrderVO implements java.io.Serializable {
 		this.susPoint = susPoint;
 	}
 
-//	@ManyToOne
-//	@JoinColumn(name = "MEB_ID") // 外來鍵 
-//	private MebVO mebVO;
-//
-//	@ManyToOne
-//	@JoinColumn(name = "PG_ID") // 外來鍵
-//	private PgVO pgVO;
-//
-//	@ManyToOne
-//	@JoinColumn(name = "PET_ID") // 外來鍵
-//	private PetVO petVO;
-//
-//	@ManyToOne
-//	@JoinColumn(name = "SVC_ID") // 外來鍵
-//	private PgSvcItemVO svcId;
+	public PgOrderVO(Integer mebId, Integer pgId, Integer petId, Integer pgSvcId, LocalDate bookingDate,
+			String bookingTime, Integer svcPrice) {
+		super();
+		this.mebId = mebId;
+		this.pgId = pgId;
+		this.petId = petId;
+		this.pgSvcId = pgSvcId;
+		this.bookingDate = bookingDate;
+		this.bookingTime = bookingTime;
+		this.svcPrice = svcPrice;
+		this.bookingStatus = "0"; //預設未完成
+		this.apprStatus = "0"; //預設處理中
+
+	}
 
 }
