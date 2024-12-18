@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface PsPorRepository extends JpaRepository<PsPorVO, Integer>{
@@ -28,7 +29,8 @@ public interface PsPorRepository extends JpaRepository<PsPorVO, Integer>{
     @Query(value = "from PsPorVO where psId=?1 order by picId")
     List<PsPorVO> findByPsId(int psId);
 
-
+    @Query("SELECT p.picId FROM PsPorVO p WHERE p.psId = :psId")
+    List<String> findPictureIdsByPsId(@Param("psId") Integer psId);
 
 
 }

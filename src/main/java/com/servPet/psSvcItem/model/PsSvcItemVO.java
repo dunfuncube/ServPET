@@ -1,6 +1,5 @@
 package com.servPet.psSvcItem.model;
 
-import com.servPet.psOdd.model.PsOddVO;
 import com.servPet.psOrder.model.PsOrderVO;
 import com.servPet.psSvc.model.PsSvcVO;
 import lombok.*;
@@ -13,9 +12,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-@Data
 @NoArgsConstructor
-@AllArgsConstructor
+
 @Entity
 @Table(name = "PET_SITTER_SERVICE_ITEM")
 
@@ -28,11 +26,14 @@ public class PsSvcItemVO implements Serializable {
     @Column(name = "SVC_ID", updatable = false)
     private Integer svcId;
 
-    //服務項目編號多對一
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "PSO_ID", nullable = false) // 指定外鍵列名為 PSO_ID
-    private PsOrderVO psOrderVO;
+    //一張訂單會有多個編號 服務項目編號多對一
+//    @ManyToOne
+//    @JoinColumn(name = "PSO_ID", nullable = false) // 服務項目對應的訂單 ID，設為非空
+//    private PsOrderVO psOrderVO;
 
+
+
+    //一個保母會有多個服務項目
 
 
     @Column(name = "SVC_DESCR")
@@ -42,4 +43,33 @@ public class PsSvcItemVO implements Serializable {
     @Column(name = "SVC_NAME")
     private String svcName;
 
+    public PsSvcItemVO(Integer svcId, String svcDescr, String svcName) {
+        this.svcId = svcId;
+        this.svcDescr = svcDescr;
+        this.svcName = svcName;
+    }
+
+    public Integer getSvcId() {
+        return svcId;
+    }
+
+    public void setSvcId(Integer svcId) {
+        this.svcId = svcId;
+    }
+
+    public String getSvcDescr() {
+        return svcDescr;
+    }
+
+    public void setSvcDescr(String svcDescr) {
+        this.svcDescr = svcDescr;
+    }
+
+    public String getSvcName() {
+        return svcName;
+    }
+
+    public void setSvcName(String svcName) {
+        this.svcName = svcName;
+    }
 }

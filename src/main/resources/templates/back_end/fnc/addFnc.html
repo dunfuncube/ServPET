@@ -1,59 +1,82 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>功能新增 - addFnc.html</title>
-    <link rel="stylesheet" th:href="@{/css/fnc/addFnc.css}"/>
+<meta charset="UTF-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>功能新增 - addFnc.html</title>
+<link rel="stylesheet" th:href="@{/css/addFnc.css}" />
+<link rel="stylesheet" th:href="@{/css/adminData.css}" />
+<link rel="stylesheet" th:href="@{/css/dashboard.css}" />
 </head>
 <body>
 
-<!--*************** table#header (上方深色) 區域 **************-->
-<table id="header">
-    <tr>
-        <td>
-            <img th:src="@{/images/admin/pflogow.png}">
-            <font>功能新增</font>
-            <img th:src="@{/images/admin/pflogow.png}">
-            <h4><a th:href="@{/fnc/select_fnc_page}">回檢索管理頁</a></h4>
-        </td>
-    </tr>
-</table>
+	<!--*************** table#header (上方深色) 區域 **************-->
+	<table id="header">
+		<tr>
+			<td><img th:src="@{/images/admin/pflogow.png}"> 
+			<font>功能新增</font>
+				<img th:src="@{/images/admin/pflogow.png}"></td>
+		</tr>
+	</table>
 
-<!--**************** div#body (中間淺色) 區域 *****************-->
-<div id="body">
-    <article>
-        <h4><b>所有欄位皆為必填欄位</b></h4>
-        <form th:action="@{/fnc/insert}" method="post" th:object="${fncVO}" enctype="multipart/form-data">
-        
-            <div>
-                <label>功能名稱:</label>
-                <input type="text" th:field="*{fncName}" placeholder="請輸入2~20字的功能名稱" onclick="hideContent('fncName.errors');" /><br/>
-                <span th:if="${#fields.hasErrors('fncName')}" th:errors="*{fncName}" class="error" id="fncName.errors"></span>
-            </div>
+	<div th:include="@{back_end/admin/adminData}"></div>
 
-            <div>
-                <label id="des" >功能描述:</label>
-                <textarea th:field="*{fncDes}" placeholder="請輸入2~255字的功能描述" onclick="hideContent('fncDes.errors');"></textarea><br/>
-                <span th:if="${#fields.hasErrors('fncDes')}" th:errors="*{fncDes}" class="error" id="fncDes.errors"></span>
-            </div>
+	<!--**************** div#body (中間淺色) 區域 *****************-->
+	<div th:include="@{back_end/admin/dashboard}"></div>
+	<div id="body">
 
-           
-			<br><br>
-            <div>
-                <button type="submit" id="submit"> 送出新增 </button>
-            </div>
-        </form> 
-    </article>
-</div>
+		<article id="BGcat">
+			<img id="BGcat" th:src="@{/images/admin/BGcat.png}" />
+		</article>
 
-    <!--***************** footer (下方深色) 區域 *****************-->
-    <footer>
-        <p>Copyright © 2024 ServPET 寵寵唯蹟 All Rights Reserved.</p>
-    </footer>
+		<article id="body">
+			<h2>
+				<span>填寫資料</span>
+			</h2>
+			<hr>
+			<h4>
+				<b>所有欄位皆為必填欄位</b>
+			</h4>
+			<form th:action="@{/fnc/insert}" method="post" th:object="${fncVO}"
+				enctype="multipart/form-data">
 
-    <!--***************** JS程式碼區段 *****************-->
-    <script type="text/javascript">
+				<div>
+					<label>功能名稱:</label> <input type="text" th:field="*{fncName}"
+						placeholder="請輸入2~20字的功能名稱"
+						onclick="hideContent('fncName.errors');" /><br /> <span
+						th:if="${#fields.hasErrors('fncName')}" th:errors="*{fncName}"
+						class="error" id="fncName.errors"></span>
+				</div>
+
+				<div>
+					<label id="des">功能描述:</label>
+					<textarea th:field="*{fncDes}" placeholder="請輸入2~255字的功能描述"
+						onclick="hideContent('fncDes.errors');"></textarea>
+					<br /> <span th:if="${#fields.hasErrors('fncDes')}"
+						th:errors="*{fncDes}" class="error" id="fncDes.errors"></span>
+				</div>
+				<div>
+					<button type="submit" id="submit">送出新增</button>
+				</div>
+			</form>
+			<button type="submit"
+				onclick="window.location.href='/fnc/select_fnc_page'">回管理頁</button>
+		</article>
+
+		<article id="BGdog">
+			<img id="BGdog" th:src="@{/images/admin/BGdog.png}" />
+		</article>
+
+	</div>
+
+	<!--***************** footer (下方深色) 區域 *****************-->
+	<footer>
+		<p>Copyright © 2024 ServPET 寵寵唯蹟 All Rights Reserved.</p>
+	</footer>
+
+	<!--***************** JS程式碼區段 *****************-->
+	<script type="text/javascript">
         // 清除提示信息
         function hideContent(d) {
             document.getElementById(d).style.display = "none";
@@ -106,6 +129,6 @@
             }
         }
     </script>
- 
+
 </body>
 </html>

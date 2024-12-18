@@ -1,97 +1,114 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>檢舉保母</title>
-    <link rel="stylesheet" th:href="@{/css/psCompl/addPsCompl.css}"/>
+<meta charset="UTF-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>檢舉保母</title>
+<link rel="stylesheet" th:href="@{/css/addCompl.css}" />
+<link rel="stylesheet" th:href="@{/css/adminData.css}" />
+<link rel="stylesheet" th:href="@{/css/dashboard.css}" />
 </head>
 <body>
 
 	<table id="header">
-        <tr>
-            <td>
-                <img th:src="@{/images/psCompl/pflogow.png}"/>
-                <font>檢舉保母</font>
-                <img th:src="@{/images/psCompl/pflogow.png}"/>
-                <h4><a th:href="@{/psCompl/select_psCompl_page}">回檢舉管理頁</a></h4>
-            </td>
-        </tr>
-    </table>
+		<tr>
+			<td><img th:src="@{/images/admin/pflogow.png}" /> <font>檢舉保母</font>
+				<img th:src="@{/images/admin/pflogow.png}" />
+				<h4>
+					<a th:href="@{/psCompl/select_psCompl_page}">回檢舉管理頁</a>
+				</h4></td>
+		</tr>
+	</table>
+
+	<div th:include="@{back_end/admin/adminData}"></div>
+
+	<!--**************** div#body (中間淺色) 區域 *****************-->
+
+	<div th:include="@{back_end/admin/dashboard}"></div>
+
 
 	<!-- 使用 th:object 绑定表单数据 -->
-	
+
 	<div th:if="${errors != null}" class="error">
-	    <ul>
-	        <li th:each="err : ${errors}" th:text="${err.defaultMessage}"></li>
-	    </ul>
+		<ul>
+			<li th:each="err : ${errors}" th:text="${err.defaultMessage}"></li>
+		</ul>
 	</div>
 
-	  <div id="body">
-        <article>
-        <table id="body">
-		<form th:action="@{/psCompl/insert}" method="post"
-		enctype="multipart/form-data" th:object="${psComplVO}">
-		
-		<!-- 檢舉保母 -->
-		
-		<div>
-	      <label>會員編號:</label>
-	      <input type="text" th:field="*{mebId}" placeholder="你的會員編號" onclick="hideContent('mebId.errors');" /><br/>
-	      <span th:if="${#fields.hasErrors('mebId')}" th:errors="*{mebId}" class="error" id="mebId.errors"></span>
-   		 </div>
-   		 
-		 <div>
-	      <label>保母編號:</label>
-	      <input type="text" th:field="*{psId}" placeholder="要檢舉的保母編號" onclick="hideContent('psId.errors');" /><br/>
-	      <span th:if="${#fields.hasErrors('psId')}" th:errors="*{psId}" class="error" id="psId.errors"></span>
-   		 </div>
-		
-		<!-- 檢舉描述 -->
-		<div>
-			<label id="des" for="psComplDes">檢舉描述:</label>
-			<textarea th:field="*{psComplDes}" placeholder="請詳述發生的情況" required="true"></textarea>
-			<div th:if="${#fields.hasErrors('psComplDes')}" class="error">
-				<p th:errors="*{psComplDes}">請填寫檢舉描述</p>
-			</div>
-		</div>
+	<div id="body">
+		<h2>
+			<span>填寫資料</span>
+		</h2>
+		<hr>
+		<article>
+			<table id="body">
+				<form th:action="@{/psCompl/insert}" method="post"
+					enctype="multipart/form-data" th:object="${psComplVO}">
 
-		<!-- 上傳文件 -->
-		<h4>檢附照片有助於讓審核人員做出更適當的處理哦~</h4>
-		<h5 style="color:red;">溫馨提醒:請勿提供與本事件無關或修改後的照片</h5>
-		<div>
-        <label for="upFiles1">檢舉照片 1：</label>
-        <input type="file" name="upFiles" id="upFiles1" />
-    </div>
+					<!-- 檢舉保母 -->
 
-    <div>
-        <label for="upFiles2">檢舉照片 2：</label>
-        <input type="file" name="upFiles" id="upFiles2" />
-    </div>
+					<div>
+						<label>會員編號:</label> <input type="text" th:field="*{mebId}"
+							placeholder="你的會員編號" onclick="hideContent('mebId.errors');" /><br />
+						<span th:if="${#fields.hasErrors('mebId')}" th:errors="*{mebId}"
+							class="error" id="mebId.errors"></span>
+					</div>
 
-    <div>
-        <label for="upFiles3">檢舉照片 3：</label>
-        <input type="file" name="upFiles" id="upFiles3" />
-    </div>
+					<div>
+						<label>保母編號:</label> <input type="text" th:field="*{psId}"
+							placeholder="要檢舉的保母編號" onclick="hideContent('psId.errors');" /><br />
+						<span th:if="${#fields.hasErrors('psId')}" th:errors="*{psId}"
+							class="error" id="psId.errors"></span>
+					</div>
 
-    <div>
-        <label for="upFiles4">檢舉照片 4：</label>
-        <input type="file" name="upFiles" id="upFiles4" />
-    </div>
+					<!-- 檢舉描述 -->
+					<div>
+						<label id="des" for="psComplDes">檢舉描述:</label>
+						<textarea th:field="*{psComplDes}" placeholder="請詳述發生的情況"
+							required="true"></textarea>
+						<div th:if="${#fields.hasErrors('psComplDes')}" class="error">
+							<p th:errors="*{psComplDes}">請填寫檢舉描述</p>
+						</div>
+					</div>
 
-	<br><br>
-		<!-- 提交按钮 -->
-		<div>
-			<button type="submit">提交檢舉</button>
-		</div>
+					<!-- 上傳文件 -->
+					<h4>檢附照片有助於讓審核人員做出更適當的處理哦~</h4>
+					<h5 style="color: red;">溫馨提醒:請勿提供與本事件無關或修改後的照片</h5>
+					<div>
+						<label for="upFiles1">檢舉照片 1：</label> <input type="file"
+							name="upFiles" id="upFiles1" />
+					</div>
 
-	</form>
-	 </table>
-        </article>
-    </div>
-    <!--***************** footer (下方深色) 區域 *****************-->
+					<div>
+						<label for="upFiles2">檢舉照片 2：</label> <input type="file"
+							name="upFiles" id="upFiles2" />
+					</div>
+
+					<div>
+						<label for="upFiles3">檢舉照片 3：</label> <input type="file"
+							name="upFiles" id="upFiles3" />
+					</div>
+
+					<div>
+						<label for="upFiles4">檢舉照片 4：</label> <input type="file"
+							name="upFiles" id="upFiles4" />
+					</div>
+
+					<br>
+					<br>
+					<!-- 提交按钮 -->
+					<div>
+						<button type="submit">提交檢舉</button>
+					</div>
+
+				</form>
+			</table>
+		</article>
+	</div>
+	<!--***************** footer (下方深色) 區域 *****************-->
 	<footer>
-	  <p>Copyright © 2024 ServPET 寵寵唯蹟 All Rights Reserved.</p>
+		<p>Copyright © 2024 ServPET 寵寵唯蹟 All Rights Reserved.</p>
 	</footer>
 
 	<script type="text/javascript">

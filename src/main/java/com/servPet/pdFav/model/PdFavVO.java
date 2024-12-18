@@ -12,16 +12,7 @@ import javax.persistence.Table;
 import com.servPet.meb.model.MebVO;
 import com.servPet.pdDetails.model.PdDetailsVO;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "PRODUCT_FAVORITE")
 public class PdFavVO implements java.io.Serializable {
     private static final long serialVersionUID = 1L;
@@ -41,7 +32,31 @@ public class PdFavVO implements java.io.Serializable {
     @JoinColumn(name = "PD_ID")
     private PdDetailsVO pdDetailsVO;
 
-    @Column(name = "PD_FAV_STATUS")
-    private String pdFavStatus;
+    public PdFavVO() {
+    }
 
+	public Integer getPdFavId() {
+		return pdFavId;
+	}
+
+	public void setPdFavId(Integer pdFavId) {
+		this.pdFavId = pdFavId;
+	}
+
+	public MebVO getMebVO() {
+		return mebVO;
+	}
+
+	public void setMebVO(MebVO mebVO) {
+		this.mebVO = mebVO;
+	}
+
+	public PdDetailsVO getPdDetailsVO() {
+		return pdDetailsVO;
+	}
+
+	public void setPdDetailsVO(PdDetailsVO pdDetailsVO) {
+		this.pdDetailsVO = pdDetailsVO;
+	}
+    
 }

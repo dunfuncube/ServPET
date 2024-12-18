@@ -11,10 +11,13 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serial;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.*;
-
+import javax.validation.constraints.NotNull;
 
 @Entity
 @NoArgsConstructor
@@ -28,31 +31,37 @@ public class PsOrderVO implements java.io.Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 使用自增的方式來生成主鍵
     @Column(name = "PSO_ID")
     private Integer psoId;
-
+    //一個會員會有多筆訂單
     @ManyToOne
     @JoinColumn(name = "MEB_ID") // 外來鍵
     private MebVO mebVO;
-//private Integer MebId;
+//    @Column(name = "MEB_ID")
+//    private  Integer mebId;
 
+    //一個保母會有多筆訂單
     @ManyToOne
     @JoinColumn(name = "PS_ID") // 外來鍵
     private PsVO psVO;
-//private Integer PsId;
+//    @Column(name = "PS_ID")
+//    private Integer psId;
 
-    @OneToOne(cascade = CascadeType.ALL) // 設定一對一關聯，級聯操作
-    @JoinColumn(name = "PET_ID") // 外來鍵
-    private PetVO pet;
-//private Integer petId;
+    //一筆訂單只有一隻寵物
+    @ManyToOne
+    @JoinColumn(name = "PET_ID") // 外來鍵，連接到 PetVO
+    private PetVO petVO;
+//    @Column(name = "PET_ID")
+//    private Integer petId;
 
-    @OneToMany(mappedBy = "svcId", cascade = CascadeType.ALL)
-    private List<PsSvcItemVO> svcItem;
-//private Integer svcId;
+    //一筆訂單會有多個服務項目
+//    @OneToMany(mappedBy = "psOrderVO", cascade = CascadeType.ALL)
+//    private Set<PsSvcItemVO> serviceItems = new HashSet<>();
+
 
     @Column(name = "BOOKING_DATE", nullable = false)
 // @Future(message="請選擇今日之後的日期")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @NotEmpty(message = "請選擇要預約的日期")
-    private LocalDateTime bookingDate;
+    @NotNull(message = "請選擇要預約的日期")
+    private LocalDate bookingDate;
 
     @Column(name = "BOOKING_TIME", nullable = false)
     @NotEmpty(message = "請選擇要預約的時段")
@@ -61,15 +70,18 @@ public class PsOrderVO implements java.io.Serializable {
     @Column(name = "BOOKING_STATUS")
     private String bookingStatus;
 
-//    @Column(name = "SVC_ID", nullable = false)
-//    @NotEmpty(message = "請選擇要預約的美容項目")
-//    private Integer svcId;
+
+
+    @Column(name = "SVC_ID", nullable = false)
+    @NotNull(message = "請選擇要預約的服務項目")
+    private Integer svcId;
+
 
     @Column(name = "APPR_STATUS")
     private String apprStatus;
 
-    @Column(name = "AMOUNT", nullable = false)
-    private Integer amount;
+    @Column(name = "SVC_PRICE", nullable = false)
+    private Integer svcPrice;
 
     @Column(name = "STAR")
     private Integer star;
@@ -88,6 +100,7 @@ public class PsOrderVO implements java.io.Serializable {
         this.psoId = psoId;
     }
 
+
     public MebVO getMebVO() {
         return mebVO;
     }
@@ -104,19 +117,27 @@ public class PsOrderVO implements java.io.Serializable {
         this.psVO = psVO;
     }
 
-    public PetVO getPet() {return pet;}
+    public PetVO getPetVO() {
+        return petVO;
+    }
 
-    public void setPet(PetVO pet) {this.pet = pet;}
+    public void setPetVO(PetVO petVO) {
+        this.petVO = petVO;
+    }
 
-    public List<PsSvcItemVO> getSvcItem() {return svcItem;}
+    public Integer getSvcId() {
+        return svcId;
+    }
 
-    public void setSvcItem(List<PsSvcItemVO> svcItem) {this.svcItem = svcItem;}
+    public void setSvcId(Integer svcId) {
+        this.svcId = svcId;
+    }
 
-    public LocalDateTime getBookingDate() {
+    public LocalDate getBookingDate() {
         return bookingDate;
     }
 
-    public void setBookingDate(LocalDateTime bookingDate) {
+    public void setBookingDate(LocalDate bookingDate) {
         this.bookingDate = bookingDate;
     }
 
@@ -144,12 +165,12 @@ public class PsOrderVO implements java.io.Serializable {
         this.apprStatus = apprStatus;
     }
 
-    public Integer getAmount() {
-        return amount;
+    public Integer getSvcPrice() {
+        return svcPrice;
     }
 
-    public void setAmount(Integer amount) {
-        this.amount = amount;
+    public void setSvcPrice(Integer svcPrice) {
+        this.svcPrice = svcPrice;
     }
 
     public Integer getStar() {

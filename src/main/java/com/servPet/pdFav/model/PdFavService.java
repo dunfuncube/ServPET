@@ -8,62 +8,76 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.servPet.meb.model.MebVO;
+import com.servPet.pdDetails.model.PdDetailsRepository;
+import com.servPet.pdDetails.model.PdDetailsVO;
+import com.servPet.pg.model.PgVO;
+import com.servPet.pgFav.model.PgFavVO;
+
 @Service ("pdFavService")
 public class PdFavService {
 
     @Autowired
     PdFavRepository pdFavRepository;
+    
+    @Autowired
+    PdDetailsRepository pdDetailsRepository;  // 此行檢查商品是否存在收藏列表中
 
-    // 查詢特定會員的所有收藏商品
-    public List<PdFavVO> getAllFavoritesByMebId(Integer mebId) {
-        return pdFavRepository.findByMebVO_MebId(mebId);
+ // 取得所有收藏商品列表
+    public List<PdFavVO> getAllFavorites() {
+        return pdFavRepository.findAll(); // 使用 JpaRepository 的內建方法
     }
 
-    // 查詢特定會員是否收藏了特定商品
-    public Optional<PdFavVO> getFavoriteByMebIdAndPdId(Integer mebId, Integer pdId) {
+    // 檢查是否已收藏商品
+    public Optional<PdFavVO> checkIfFavorite(Integer mebId, Integer pdId) {
         return pdFavRepository.findByMebVO_MebIdAndPdDetailsVO_PdId(mebId, pdId);
     }
 
-    // 新增或更新收藏（狀態設為收藏）
+//    public String addFavorite(MebVO mebVO, PdDetailsVO pdDetailsVO) {
+//        Optional<PdFavVO> existingFavorite = pdFavRepository.findByMebVO_MebIdAndPdVO_PdId(mebVO.getMebId(), pdDetailsVO.getPdId());
+//        if (existingFavorite.isPresent()) {
+//            return "商品已經收藏過囉！";
+//        }
+//        PdFavVO pdFavVO = new PdFavVO();
+//        pdFavVO.setMebVO(mebVO);
+//        pdFavVO.setPdDetailsVO(pdDetailsVO);
+//        pdFavRepository.save(pdFavVO);
+//        return "收藏成功";
+//    }
+    
+ // 新增收藏
     @Transactional
-    public PdFavVO addFavorite(PdFavVO pdFav) {
-        // 檢查該會員是否已經收藏該商品，如果已存在則只更新狀態
-        Optional<PdFavVO> existingFav = pdFavRepository.findByMebVO_MebIdAndPdDetailsVO_PdId(pdFav.getMebVO().getMebId(), pdFav.getPdDetailsVO().getPdId());
-        if (existingFav.isPresent()) {
-            PdFavVO fav = existingFav.get();
-            fav.setPdFavStatus("0"); // 0 表示收藏
-            return pdFavRepository.save(fav);
+    public String addFavorite(Integer mebId, Integer pdId) {
+        // 確認商品是否存在
+    	PdDetailsVO pdDetailsVO = pdDetailsRepository.findByPdId(pdId);
+        if (pdDetailsVO == null) {
+            return "商品不存在，無法收藏！";
         }
-        return pdFavRepository.save(pdFav);
+
+        // 檢查是否已經收藏
+        Optional<PdFavVO> existingFavorite = pdFavRepository.findByMebVO_MebIdAndPdDetailsVO_PdId(mebId, pdId);
+        if (existingFavorite.isPresent()) {
+            return "商品已經收藏過囉！";
+        }
+
+        // 3. 創建新的收藏紀錄
+        PdFavVO pdFavVO = new PdFavVO();
+        MebVO mebVO = new MebVO();
+        mebVO.setMebId(mebId); // 設定會員編號
+
+        pdFavVO.setMebVO(mebVO);
+        pdFavVO.setPdDetailsVO(pdDetailsVO);
+
+        // 4. 儲存收藏紀錄
+        pdFavRepository.save(pdFavVO);
+
+        return "收藏成功！";
     }
 
-    // 取消收藏 (狀態設為取消收藏)
-    @Transactional
-    public void cancelFavorite(Integer mebId, Integer pdId) {
-        pdFavRepository.cancelFavorite(mebId, pdId);
-    }
-
-    // 恢復收藏 (狀態設為收藏)
-    @Transactional
-    public void restoreFavorite(Integer mebId, Integer pdId) {
-        pdFavRepository.restoreFavorite(mebId, pdId);
-    }
-
+    
     // 刪除收藏
     @Transactional
-    public void deleteFavorite(Integer pdFavId) {
+    public void deleteFavoriteById(Integer pdFavId) {
         pdFavRepository.deleteById(pdFavId);
     }
-    
-    // 根據收藏 ID 查詢收藏商品
-    public PdFavVO getFavoriteById(Integer pdFavId) {
-        return pdFavRepository.findById(pdFavId).orElse(null);
-    }
-
-    // 根據複合查詢條件取得收藏商品列表
-    public List<PdFavVO> getAllFavorites(Map<String, String[]> map) {
-        // 此處可根據具體需求實作複合查詢邏輯
-        return pdFavRepository.findAll();
-    }
-    
-} 
+}

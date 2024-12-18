@@ -1,5 +1,6 @@
 package com.servPet.psCompl.model;
 
+
 import com.servPet.psCompl.hibernateUtilCompositeQuery.HibernateUtil_CompositeQuery_psCompl;
 import com.servPet.psCompl.model.PsComplRepository;
 import org.hibernate.SessionFactory;
@@ -24,12 +25,12 @@ public class PsComplService {
     private SessionFactory sessionFactory;
 
     // 新增檢舉 (Add a new complaint)
-    public void addPsCompl(PsComplVO psComplVO) {
+    public void addPsCompl(PsComplVO<?> psComplVO) {
         psComplRepository.save(psComplVO);  // 使用 JPA psComplRepository 進行儲存
     }
 
     // 處理文件上傳 (Handle file upload)
-    public void handleFileUpload(PsComplVO psComplVO, MultipartFile[] files) throws IOException {
+    public void handleFileUpload(PsComplVO<?> psComplVO, MultipartFile[] files) throws IOException {
         // 檢查每個檔案並將它們存儲到對應的屬性中
         for (int i = 0; i < files.length; i++) {
             if (files[i] != null && !files[i].isEmpty()) {
@@ -56,50 +57,25 @@ public class PsComplService {
 
     // 更新檢舉 (Update a complaint)
     @Transactional
-    public void updatePsCompl(PsComplVO psComplVO) {
-        // 确保数据库中相关的 psComplDate 字段在更新时不丢失
+    public void updatePsCompl(PsComplVO<?> psComplVO) {
+        // 确保数据库中相关的 `psComplDate` 字段在更新时不丢失
         psComplRepository.save(psComplVO);  // 使用 JPA psComplRepository 進行儲存
     }
 
     // 根據 PS_COMPL_ID 查詢單一檢舉 (Get one complaint by PS_COMPL_ID)
-    public PsComplVO getOnePsCompl(Integer psComplId) {
+    public PsComplVO<?> getOnePsCompl(Integer psComplId) {
         Optional<PsComplVO> optional = psComplRepository.findById(psComplId);
         return optional.orElse(null);  // 如果存在，返回該檢舉，否則返回 null
     }
 
-    // 查詢所有檢舉 (Get all complaints)
+ // 查詢所有美容師資料
     public List<PsComplVO> getAll() {
-        return psComplRepository.findAll();  // 返回所有檢舉資料
+        return psComplRepository.findAll();  // 返回所有管理員資料
     }
 
-    // 根據保母編號查詢檢舉 (Get complaints by PS_ID)
-    public List<PsComplVO> getByPsId(Integer psId) {
-        return psComplRepository.findByPsId(psId);  // 根據保母編號查詢檢舉
-    }
-
-    // 根據會員編號查詢檢舉 (Get complaints by MEB_ID)
-    public List<PsComplVO> getByMebId(Integer mebId) {
-        return psComplRepository.findByMebId(mebId);  // 根據會員編號查詢檢舉
-    }
-
-    // 根據檢舉處理狀態查詢檢舉 (Get complaints by PS_COMPL_STATUS)
-    public List<PsComplVO> getByPsComplStatus(String psComplStatus) {
-        return psComplRepository.findByPsComplStatus(psComplStatus);  // 根據檢舉狀態查詢檢舉
-    }
-
-    // 根據檢舉日期範圍查詢檢舉 (Get complaints by date range)
-    public List<PsComplVO> getByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
-        return psComplRepository.findByDateRange(startDate, endDate);  // 根據日期範圍查詢
-    }
-
-    // 根據檢舉描述模糊查詢檢舉 (Get complaints by psComplDes like)
-    public List<PsComplVO> getByPsComplDesLike(String psComplDes) {
-        return psComplRepository.findByPsComplDesLike(psComplDes);  // 根據檢舉描述模糊查詢
-    }
-
-    // 複合查詢檢舉資料 (Composite query for complaints)
+    // 複合查詢所有美容師資料
     public List<PsComplVO> getAll(Map<String, String[]> map) {
-        // 你的查詢邏輯，這裡是範例，實際應根據你的需求來查詢
-        return psComplRepository.findAll();  // 假設你有一個 repository 處理資料查詢
+        return HibernateUtil_CompositeQuery_psCompl.getAllC(map, sessionFactory.openSession());
     }
 }
+

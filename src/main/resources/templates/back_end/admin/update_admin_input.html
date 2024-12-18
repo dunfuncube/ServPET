@@ -3,82 +3,127 @@
 
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>管理員修改 - update_admin_input.html</title>
-<link rel="stylesheet" th:href="@{/css/admin/update_admin_input.css}"/>
+<link rel="stylesheet" th:href="@{/css/update_admin_input.css}" />
+<link rel="stylesheet" th:href="@{/css/adminData.css}" />
+<link rel="stylesheet" th:href="@{/css/dashboard.css}" />
 </head>
 
 <body>
 	<!--*************** table#header (上方深色) 區域 **************-->
 	<table id="header">
-	  <tr>
-	   <td>
-	 	<img th:src="@{/images/admin/pflogow.png}">
-	  		<font>管理員資料修改</font>
-	  	<img th:src="@{/images/admin/pflogow.png}">
-	  	<h4><a th:href="@{/admin/select_admin_page}">回檢索管理頁</a></h4>
-	 <td>
-	<tr>
+		<tr>
+			<td><img th:src="@{/images/admin/pflogow.png}"> <font>管理員資料修改</font>
+				<img th:src="@{/images/admin/pflogow.png}">
+			<td>
+		<tr>
 	</table>
-	<!--**************** div#body (中間淺色) 區域 *****************-->
-	<div id="body">
-	<article>
-		<h4><b>所有欄位皆為必填欄位</b></h4>
-		<form th:action="@{update}" method="post" th:object="${adminVO}" enctype="multipart/form-data">
-			<div>
-			<label>管理員編號:</label>
-			<input type="text" th:field="*{adminId}" readonly /><br/>
 
-			</div>
-			
+	<div th:include="@{back_end/admin/adminData}"></div>
+
+	<!--**************** div#body (中間淺色) 區域 *****************-->
+	<div th:include="@{back_end/admin/dashboard}"></div>
+	<div id="body">
+		<article id="BGcat">
+			<img id="BGcat" th:src="@{/images/admin/BGcat.png}" />
+		</article>
+
+		<article id="body">
+			<h2>修改資料</h2>
+			<hr>
+
+			<form th:action="@{update}" method="post" th:object="${adminVO}"
+				enctype="multipart/form-data">
+				<!-- 管理員編號 -->
+				<div>
+					<label>管理員編號:</label> <input type="text" th:field="*{adminId}"
+						readonly /><br />
+				</div>
+
+				<!-- 管理員姓名 -->
+				<div>
+					<label>管理員姓名:</label> <input type="text" th:field="*{adminName}"
+						onclick="hideContent('adminName.errors');" /><br /> <span
+						th:if="${#fields.hasErrors('adminName')}" th:errors="*{adminName}"
+						class="error" id="adminName.errors"></span>
+				</div>
+
+				<!-- 管理員角色 -->
+				<div>
+					<label>管理員角色:</label> <input type="text" th:field="*{adminRole}"
+						onclick="hideContent('adminRole.errors');" readonly /><br /> <span
+						th:if="${#fields.hasErrors('adminRole')}" th:errors="*{adminRole}"
+						class="error" id="adminRole.errors"></span>
+				</div>
+
+				<!-- 管理員狀態 -->
 			<div>
-			<label>管理員姓名:</label>
-			<input type="text" th:field="*{adminName}" onclick="hideContent('adminName.errors');" /><br/>
-			<span  th:if="${#fields.hasErrors('adminName')}" th:errors="*{adminName}" class="error" id="adminName.errors"></span>
+			    <label>管理員狀態:</label> 
+			    <select th:if="${adminVO.adminId != 1001}" th:field="*{adminAccStatus}" onchange="hideContent('adminAccStatus.errors');">
+			        <option value="1" th:selected="${adminVO.adminAccStatus == 1}">啟用</option>
+			        <option value="0" th:selected="${adminVO.adminAccStatus == 0}">停用</option>
+			    </select>
+			    
+			    <select th:if="${adminVO.adminId == 1001}" th:field="*{adminAccStatus}" onchange="hideContent('adminAccStatus.errors');">
+			        <option value="1" th:selected="${adminVO.adminAccStatus == 1}">啟用</option>
+			    </select> 
+			    <br /> 
+			    <span th:if="${#fields.hasErrors('adminAccStatus')}" th:errors="*{adminAccStatus}" class="error" id="adminAccStatus.errors"></span>
 			</div>
-			
-			<div>
-			<label>管理員狀態:</label>
-				<input type="radio" th:field="*{adminAccStatus}" value="1" onclick="hideContent('adminAccStatus.errors');" /> 啟用
-				<input type="radio" th:field="*{adminAccStatus}" value="0" onclick="hideContent('adminAccStatus.errors');" /> 停用
-				  <br/>
-			  <span th:if="${#fields.hasErrors('adminAccStatus')}" th:errors="*{adminAccStatus}" class="error" id="adminAccStatus.errors"></span>
-			</div>
-			
-			<div>
-			<label>管理員帳號:</label>
-			<input type="text" th:field="*{adminAcc}" onclick="hideContent('adminAcc.errors');" /><br/>
-			<span  th:if="${#fields.hasErrors('adminAcc')}" th:errors="*{adminAcc}" class="error" id="adminAcc.errors"></span>
-			</div>
-				
-			<div>
-			<label>管理員密碼:</label>
-			<input type="text" th:field="*{adminPwd}" onclick="hideContent('adminPwd.errors');"/><br/>
-			<span  th:if="${#fields.hasErrors('adminPwd')}" th:errors="*{adminPwd}" class="error" id="adminPwd.errors"></span>
-			</div>
-			
-			<div>
-			<label>管理員照片:</label>
-			<input type="file" th:field="*{upFiles}" onclick="previewImage()" multiple="multiple"/>
-            <!-- 可以不修改圖片 <span  th:if="${#fields.hasErrors('upFiles')}" th:errors="*{upFiles}" class="error" id="upFiles.errors"></span> -->
-			<div id="blob_holder"><img th:src="@{/admin/DBGifReader} + '?adminId=' + ${adminVO.adminId}" width="100px"></div>
-			</div>
-			
-			<div>
-				<div></div>
-				<div><button type="submit" id="submit"> 送出修改 </button></div>
-				<div></div>
-			</div>		
-		</form>
+
+				<!-- 管理員帳號 -->
+				<div>
+					<label>管理員帳號:</label> <input type="text" th:field="*{adminAcc}"
+						onclick="hideContent('adminAcc.errors');" /><br /> <span
+						th:if="${#fields.hasErrors('adminAcc')}" th:errors="*{adminAcc}"
+						class="error" id="adminAcc.errors"></span>
+				</div>
+
+				<!-- 管理員密碼 -->
+				<div>
+					<label>管理員密碼:</label> <input type="text" th:field="*{adminPwd}"
+						onclick="hideContent('adminPwd.errors');" /><br /> <span
+						th:if="${#fields.hasErrors('adminPwd')}" th:errors="*{adminPwd}"
+						class="error" id="adminPwd.errors"></span>
+				</div>
+
+				<!-- 管理員照片 -->
+				<div>
+					<label>管理員照片:</label> <input type="file" th:field="*{upFiles}"
+						onclick="previewImage()" multiple="multiple"
+						onchange="hideContent('upFiles.errors');" /> <span
+						th:if="${#fields.hasErrors('upFiles')}" th:errors="*{upFiles}"
+						class="error" id="upFiles.errors"></span>
+					<div id="blob_holder">
+						<img
+							th:src="@{/admin/DBGifReader} + '?adminId=' + ${adminVO.adminId}">
+					</div>
+				</div>
+
+				<!-- 送出按鈕 -->
+				<div>
+					<button type="submit" id="submit">送出修改</button>
+				</div>
+			</form>
+
+			<!-- 回到管理頁 -->
+			<form action="#" th:action="@{/admin/select_admin_page}" method="get">
+				<button type="submit" class="btn btn-primary">回管理頁</button>
+			</form>
+		</article>
+
+		<article id="BGdog">
+			<img id="BGdog" th:src="@{/images/admin/BGdog.png}" />
 		</article>
 	</div>
 	<!--***************** footer (下方深色) 區域 *****************-->
 	<footer>
-		  <p>Copyright © 2024 ServPET 寵寵唯蹟 All Rights Reserved.</p>
+		<p>Copyright © 2024 ServPET 寵寵唯蹟 All Rights Reserved.</p>
 	</footer>
 
-<!-- JavaScript part -->
-<script type="text/javascript">
+	<script type="text/javascript">
 //清除提示信息
 function hideContent(d) {
      document.getElementById(d).style.display = "none";

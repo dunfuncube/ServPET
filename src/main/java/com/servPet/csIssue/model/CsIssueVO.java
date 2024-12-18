@@ -16,10 +16,8 @@ import javax.validation.constraints.Size;
 import com.servPet.admin.model.AdminVO;
 import com.servPet.meb.model.MebVO;
 
-import lombok.Data;
 import lombok.ToString;
 
-@Data
 @ToString(exclude = {"mebId", "adminId"})
 @Entity
 @Table(name = "CS_ISSUE")

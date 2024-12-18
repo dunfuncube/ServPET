@@ -13,70 +13,81 @@ import com.servPet.adminPer.model.AdminPerVO;
 
 public class HibernateUtil_CompositeQuery_adminPer {
 
-    // This method generates a Predicate based on the column name and value
+    // 根據欄位名稱和查詢值生成對應的 Predicate
     public static Predicate get_aPredicate_For_AnyDB(CriteriaBuilder builder, Root<AdminPerVO> root, String columnName, String value) {
         Predicate predicate = null;
 
-        // Handling different column types for dynamic query
-        if ("adminPerId".equals(columnName)) {  // For Integer type
+        // 檢查查詢值是否為空或 null，若是，則不生成 Predicate
+        if (value == null || value.trim().isEmpty()) {
+            return null; // 查詢值為空，直接返回 null
+        }
+
+        // 根據不同的欄位生成對應的查詢條件
+        if ("adminPerId".equals(columnName)) {  // 用於 Integer 類型
             predicate = builder.equal(root.get(columnName), Integer.valueOf(value));
-        } else if ("adminId".equals(columnName)) {  // For Integer type (AdminVO)
-            // Assuming AdminPerVO has a ManyToOne relation with AdminVO, so we need to query through the AdminVO
+        } else if ("adminId".equals(columnName)) {  // 假設 AdminPerVO 和 AdminVO 之間有 ManyToOne 關係
             predicate = builder.equal(root.get("adminVO").get("adminId"), Integer.valueOf(value));
-        } else if ("fncId".equals(columnName)) {  // For Integer type (FncVO)
-            // Assuming AdminPerVO has a ManyToOne relation with FncVO, so we need to query through the FncVO
+        } else if ("fncId".equals(columnName)) {  // 假設 AdminPerVO 和 FncVO 之間有 ManyToOne 關係
             predicate = builder.equal(root.get("fncVO").get("fncId"), Integer.valueOf(value));
         }
 
         return predicate;
     }
 
-    // This method generates the dynamic query based on the given map of parameters
+    // 根據傳入的參數映射生成動態查詢
     @SuppressWarnings("unchecked")
     public static List<AdminPerVO> getAllC(Map<String, String[]> map, Session session) {
         Transaction tx = session.beginTransaction();
         List<AdminPerVO> list = null;
         try {
-            // 1. Create CriteriaBuilder
+            // 1. 創建 CriteriaBuilder
             CriteriaBuilder builder = session.getCriteriaBuilder();
-            // 2. Create CriteriaQuery
+            // 2. 創建 CriteriaQuery
             CriteriaQuery<AdminPerVO> criteriaQuery = builder.createQuery(AdminPerVO.class);
-            // 3. Create Root
+            // 3. 創建 Root
             Root<AdminPerVO> root = criteriaQuery.from(AdminPerVO.class);
 
-            // List to hold all the query predicates (conditions)
+            // 用來存放所有查詢條件 (predicates)
             List<Predicate> predicateList = new ArrayList<Predicate>();
 
-            // Retrieve the keys from the map (which represent the columns to filter by)
+            // 取得 map 中的所有鍵，這些鍵對應到需要篩選的欄位
             Set<String> keys = map.keySet();
             int count = 0;
 
-            // Iterate over the map to create the predicates based on the filter criteria
+            // 遍歷 map，根據每個篩選條件生成 Predicate
             for (String key : keys) {
                 String value = map.get(key)[0];
                 if (value != null && value.trim().length() != 0 && !"action".equals(key)) {
                     count++;
-                    // Add the predicate to the list based on the column and value
-                    predicateList.add(get_aPredicate_For_AnyDB(builder, root, key, value.trim()));
-                    System.out.println("Number of filter conditions sent: count = " + count);
+                    // 根據欄位和查詢值生成 Predicate 並加入到條件列表中
+                    Predicate predicate = get_aPredicate_For_AnyDB(builder, root, key, value.trim());
+                    if (predicate != null) {
+                        predicateList.add(predicate);
+                    }
+                    System.out.println("發送的過濾條件數量: count = " + count);
                 }
             }
 
-            System.out.println("Predicate list size: " + predicateList.size());
+            // 輸出條件列表的大小
+            System.out.println("Predicate 列表大小: " + predicateList.size());
 
-            // Apply the conditions to the CriteriaQuery
-            criteriaQuery.where(predicateList.toArray(new Predicate[0]));
-            // Default order by 'adminPerId' ascending
+            // 如果 predicateList 不為空，則將條件應用到 CriteriaQuery
+            if (!predicateList.isEmpty()) {
+                criteriaQuery.where(predicateList.toArray(new Predicate[0]));
+            }
+
+            // 預設依據 adminPerId 進行升序排序
             criteriaQuery.orderBy(builder.asc(root.get("adminPerId")));
 
-            // 4. Create and execute the query
+            // 4. 創建並執行查詢
             Query query = session.createQuery(criteriaQuery);
             list = query.getResultList();
 
             tx.commit();
         } catch (RuntimeException ex) {
-            if (tx != null)
+            if (tx != null) {
                 tx.rollback();
+            }
             throw ex;
         } finally {
             session.close();

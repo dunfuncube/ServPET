@@ -12,19 +12,10 @@ import javax.persistence.Table;
 import com.servPet.meb.model.MebVO;
 import com.servPet.pg.model.PgVO;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "PET_GROOMER_FAVORITE")
 public class PgFavVO implements java.io.Serializable {
-	private static final long serializableUID = 1L;
+	private static final long serialVersionUID = 1L;
 	
 	@Id
 	@Column(name = "PG_FAV_ID")
@@ -33,15 +24,38 @@ public class PgFavVO implements java.io.Serializable {
 	
 	// 關聯到 MEMBER 表格內的 MEB_ID 欄位
 	@ManyToOne
-	@JoinColumn(name = "MEB_ID")
+	@JoinColumn(name = "MEB_ID", nullable = false)
 	private MebVO mebVO;
 	
-	// 關聯到 Product_Details 表格內的 PG_ID 欄位
+	// 關聯到 PET_GROOMER_FAVORITE 表格內的 PG_ID 欄位
 	@ManyToOne
-	@JoinColumn(name = "PG_ID")
-	private PgVO PgVO;
-	
-	@Column(name = "PG_FAV_STATUS")
-	private String pgFavStatus;
-	
+	@JoinColumn(name = "PG_ID", nullable = false)
+	private PgVO pgVO;
+
+	public PgFavVO() {
+	}
+
+	public Integer getPgFavId() {
+		return pgFavId;
+	}
+
+	public void setPgFavId(Integer pgFavId) {
+		this.pgFavId = pgFavId;
+	}
+
+	public MebVO getMebVO() {
+		return mebVO;
+	}
+
+	public void setMebVO(MebVO mebVO) {
+		this.mebVO = mebVO;
+	}
+
+	public PgVO getPgVO() {
+		return pgVO;
+	}
+
+	public void setPgVO(PgVO pgVO) {
+		this.pgVO = pgVO;
+	}
 }

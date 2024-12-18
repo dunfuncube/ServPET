@@ -1,89 +1,79 @@
 package com.servPet.vtr.model;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name = "VALUE_TRADING_RECORDS")
 public class VtrVO {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "VTR_ID")
-	private Integer vtrId; // 使用 Integer 类型
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "VTR_ID")
+    private Integer vtrId;
 
-	@Column(name = "MEB_ID", nullable = false)
-	private Integer mebId; // 使用 Integer 类型
+    @Column(name = "MEB_ID", nullable = false)
+    private Integer mebId;
 
-	@Column(name = "UPD_TIME")
-	private LocalDateTime updTime;
+    @Column(name = "UPD_TIME")
+    private LocalDateTime updateTime;
 
-	@Column(name = "CRT_TIME", nullable = false)
-	private LocalDateTime crtTime;
+    @Column(name = "CRT_TIME", nullable = false)
+    private LocalDateTime createTime;
 
-	@Column(name = "MONEY", nullable = false)
-	private Double money;
+    @Column(name = "MONEY", nullable = false)
+    private Integer money;
 
-	@Column(name = "TRA_TYPE", nullable = false)
-	private String traType;
+    @Column(name = "TRA_TYPE", nullable = false, length = 3)
+    private String transactionType;
 
-	// 默认构造器
-	public VtrVO() {
-		super();
-	}
+    // Getters and Setters
+    public Integer getVtrId() {
+        return vtrId;
+    }
 
-	// Getters and setters
-	public Integer getVtrId() {
-		return vtrId;
-	}
+    public void setVtrId(Integer vtrId) {
+        this.vtrId = vtrId;
+    }
 
-	public void setVtrId(Integer vtrId) {
-		this.vtrId = vtrId;
-	}
+    public Integer getMebId() {
+        return mebId;
+    }
 
-	public Integer getMebId() {
-		return mebId;
-	}
+    public void setMebId(Integer mebId) {
+        this.mebId = mebId;
+    }
 
-	public void setMebId(Integer mebId) {
-		this.mebId = mebId;
-	}
+    public LocalDateTime getUpdateTime() {
+        return updateTime;
+    }
 
-	public LocalDateTime getUpdTime() {
-		return updTime;
-	}
+    public void setUpdateTime(LocalDateTime updateTime) {
+        this.updateTime = updateTime;
+    }
 
-	public void setUpdTime(LocalDateTime updTime) {
-		this.updTime = updTime;
-	}
+    public LocalDateTime getCreateTime() {
+        return createTime;
+    }
 
-	public LocalDateTime getCrtTime() {
-		return crtTime;
-	}
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
+    }
 
-	public void setCrtTime(LocalDateTime crtTime) {
-		this.crtTime = crtTime;
-	}
+    public Integer getMoney() {
+        return money;
+    }
 
-	public Double getMoney() {
-		return money;
-	}
+    public void setMoney(Integer money) {
+        this.money = money;
+    }
 
-	public void setMoney(Double money) {
-		this.money = money;
-	}
+    public String getTransactionType() {
+        return transactionType;
+    }
 
-	public String getTraType() {
-		return traType;
-	}
-
-	public void setTraType(String traType) {
-		this.traType = traType;
-	}
-
-	@Override
-	public String toString() {
-		return "VtrVO [vtrId=" + vtrId + ", mebId=" + mebId + ", updTime=" + updTime + ", crtTime=" + crtTime
-				+ ", money=" + money + ", traType=" + traType + "]";
-	}
+    public void setTransactionType(String transactionType) {
+        this.transactionType = transactionType;
+    }
 }

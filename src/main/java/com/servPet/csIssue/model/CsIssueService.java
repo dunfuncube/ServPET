@@ -69,4 +69,6 @@ public class CsIssueService {
         return adminRepository.findById(adminId)
                 .orElseThrow(() -> new RuntimeException("找不到管理員編號: " + adminId));
     }
+    
+    
 }
