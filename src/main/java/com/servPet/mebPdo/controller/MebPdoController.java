@@ -1,7 +1,9 @@
 package com.servPet.mebPdo.controller;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.servPet.meb.model.MebService;
@@ -57,77 +60,91 @@ public class MebPdoController {
 //    }
 
     // 查看單一訂單詳情
-    @GetMapping("/mebPdo/{pdoId}")
-    public String getOrderDetails(Model model, @PathVariable Integer pdoId) {
-        PdoVO oneMebpdo = mebPdoService.getOrderById(pdoId);                 // 從 MebPdoService 取得訂單資料
-        List<PdoItemVO> pdoItems = mebPdoService.getPdoItemsByPdoId(pdoId);  // 查詢商品訂單明細
-        model.addAttribute("oneMebpdo", oneMebpdo);                          // 將訂單資料傳到 Thymeleaf
-        model.addAttribute("pdoItems", pdoItems);
-        return "front_end/mebpdo/listOneMebPdo";                            // 返回對應的頁面顯示訂單明細
-    }
-
-//    // 取消訂單
-//    @PostMapping("/{pdoId}/cancel")
-//    @ResponseBody
-//    public ResponseEntity<String> cancelOrder(@PathVariable Integer pdoId) {
-//        System.out.println("收到取消訂單請求，訂單ID: " + pdoId);
-//        try {
-//            mebPdoService.cancelOrder(pdoId);
-//            return ResponseEntity.ok("訂單已取消，付款狀態已更新為已退款");
-//        } catch (Exception e) {
-//            System.out.println("取消訂單失敗: " + e.getMessage());
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("取消訂單失敗，請重新操作一次！");
-//        }
+//    @GetMapping("/mebPdo/{pdoId}")
+//    public String getOrderDetails(Model model, @PathVariable Integer pdoId) {
+//        PdoVO oneMebpdo = mebPdoService.getOrderById(pdoId);                 // 從 MebPdoService 取得訂單資料
+//        List<PdoItemVO> pdoItems = mebPdoService.getPdoItemsByPdoId(pdoId);  // 查詢商品訂單明細
+//        model.addAttribute("oneMebpdo", oneMebpdo);                          // 將訂單資料傳到 Thymeleaf
+//        model.addAttribute("pdoItems", pdoItems);
+//        return "front_end/mebpdo/listOneMebPdo";                            // 返回對應的頁面顯示訂單明細
 //    }
     
+    @GetMapping("/mebPdo/{pdoId}")
+    public String getOrderDetails(Model model, @PathVariable Integer pdoId) {
+        Optional<PdoVO> optionalOrder = mebPdoService.getOrderById(pdoId);
+
+        if (optionalOrder.isPresent()) {
+            PdoVO oneMebpdo = optionalOrder.get();
+            List<PdoItemVO> pdoItems = mebPdoService.getPdoItemsByPdoId(pdoId);
+
+            model.addAttribute("oneMebpdo", oneMebpdo);
+            model.addAttribute("pdoItems", pdoItems);
+
+            return "front_end/mebpdo/listOneMebPdo";
+        } else {
+            model.addAttribute("errorMessage", "找不到該筆訂單");
+            return "errorPage"; // 轉到錯誤頁面或重新導向
+        }
+    }
+
+
     // 取消訂單並金儲值金退回錢包
     @PostMapping("/{pdoId}/cancel")
     @ResponseBody
-    public ResponseEntity<String> cancelOrder(@PathVariable Integer pdoId) {
-        System.out.println("收到取消訂單請求，訂單ID: " + pdoId);
-        try {
-            mebPdoService.cancelOrder(pdoId);
-            return ResponseEntity.ok("訂單已取消，金額已退回錢包");
-        } catch (Exception e) {
-            System.out.println("取消訂單失敗: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("取消訂單失敗，請重新操作一次！");
+    public ResponseEntity<Map<String, Object>> cancelOrder(@PathVariable Integer pdoId) {
+        Map<String, Object> response = new HashMap<>();
+        Optional<PdoVO> orderOptional = mebPdoService.getOrderById(pdoId);
+
+        if (orderOptional.isPresent()) {
+            boolean cancelSuccess = mebPdoService.cancelOrder(pdoId);
+
+            if (cancelSuccess) {
+                response.put("success", true);
+                response.put("message", "訂單已取消，金額已退回錢包");
+                return ResponseEntity.ok(response);
+            } else {
+                response.put("success", false);
+                response.put("message", "商品已出貨或非宅配，無法取消訂單");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+        } else {
+            response.put("success", false);
+            response.put("message", "找不到訂單");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
     
-//    // 更新配送地址
-//    @PostMapping("/{pdoId}/updateAddress")
-//    @ResponseBody
-//    public ResponseEntity<String> updateShippingAddress(
-//            @PathVariable Integer pdoId,
-//            @RequestParam("newAddress") String newAddress) {
-//        try {
-//            mebPdoService.updateShippingAddress(pdoId, newAddress);
-//            return ResponseEntity.ok("配送地址更新成功");
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("更新配送地址失敗，請重新操作一次！");
-//        }
-//    }
-    
-//    @Controller
-//    @RequestMapping("/login")
-//    public class LoginController {
-//
-//        @Autowired
-//        private MebService mebService;
-//
-//        @PostMapping
-//        public String login(@RequestParam String email, 
-//                            @RequestParam String password, 
-//                            HttpSession session) {
-//            try {
-//                MebVO member = mebService.login(email, password); // 呼叫登入方法
-//                session.setAttribute("mebId", member.getMebId()); // 設定 mebId 到 session
-//                return "redirect:/mebPdo/mebPdo"; // 登入成功後導向商城訂單頁面
-//            } catch (IllegalArgumentException e) {
-//                System.out.println("登入失敗：" + e.getMessage());
-//                return "redirect:/login?error=true"; // 返回登入頁面並提示錯誤
-//            }
-//        }
-//    }
+    // 修改地址
+    @PostMapping("/{pdoId}/updateAddress")
+    @ResponseBody
+    public ResponseEntity<String> updateAddress(@PathVariable Integer pdoId, String newAddress) {
+        System.out.println("收到修改地址請求，訂單ID: " + pdoId + ", 新地址: " + newAddress);
+
+        Optional<PdoVO> optionalOrder = mebPdoService.getOrderById(pdoId);
+
+        if (!optionalOrder.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("訂單不存在，請確認訂單資訊！");
+        }
+
+        PdoVO order = optionalOrder.get();
+
+        // 檢查狀態條件
+        boolean canModifyAddress = "0".equals(order.getPdoStatus())        // 訂單狀態: 進行中
+                                && "1".equals(order.getPaymentStatus())    // 付款狀態: 已付款
+                                && "0".equals(order.getShippingMethod())   // 配送方式: 宅配
+                                && "0".equals(order.getShippingStatus());  // 配送狀態: 理貨中
+
+        if (!canModifyAddress) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                 .body("商品已出貨或訂單狀態不符，無法修改配送地址！");
+        }
+
+        // 更新地址
+        order.setShippingAddr(newAddress);
+        order.setPdoUpdateTime(new java.util.Date());
+        mebPdoService.saveOrder(order); // 儲存修改後的訂單
+
+        return ResponseEntity.ok("配送地址已成功更新");
+    }
 
 }

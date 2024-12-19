@@ -23,7 +23,7 @@ public class PdFavService {
     @Autowired
     PdDetailsRepository pdDetailsRepository;  // 此行檢查商品是否存在收藏列表中
 
- // 取得所有收藏商品列表
+    // 取得所有收藏商品列表
     public List<PdFavVO> getAllFavorites() {
         return pdFavRepository.findAll(); // 使用 JpaRepository 的內建方法
     }
@@ -33,19 +33,7 @@ public class PdFavService {
         return pdFavRepository.findByMebVO_MebIdAndPdDetailsVO_PdId(mebId, pdId);
     }
 
-//    public String addFavorite(MebVO mebVO, PdDetailsVO pdDetailsVO) {
-//        Optional<PdFavVO> existingFavorite = pdFavRepository.findByMebVO_MebIdAndPdVO_PdId(mebVO.getMebId(), pdDetailsVO.getPdId());
-//        if (existingFavorite.isPresent()) {
-//            return "商品已經收藏過囉！";
-//        }
-//        PdFavVO pdFavVO = new PdFavVO();
-//        pdFavVO.setMebVO(mebVO);
-//        pdFavVO.setPdDetailsVO(pdDetailsVO);
-//        pdFavRepository.save(pdFavVO);
-//        return "收藏成功";
-//    }
-    
- // 新增收藏
+    // 新增收藏
     @Transactional
     public String addFavorite(Integer mebId, Integer pdId) {
         // 確認商品是否存在

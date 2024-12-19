@@ -73,24 +73,23 @@
                 </div>
             </div>
             <div class="dropdown">
-                <button class="dropbtn">登入</button>
-                <div class="dropdown-content">
-                    <a th:href="@{/front_end/login}">會員登入</a>
-                    <a th:href="@{/back_end/login}">後台登入</a>
-                </div>
-            </div>
-            		<div class="user-info">
-            <div class="user-profile">
-        <!-- 顯示會員頭像或預設圖片 -->
-        <img th:src="${mebImg != null ? 'data:image/png;base64,' + mebImg : '/images/defaultavatar.png'}" 
-             alt="會員頭像" 
-             class="profile-picture" />
-	    </div>
-	        <div class="user-actions">
-	            <a th:if="${!isLoggedIn}" th:href="@{/front_end/login}">登入</a>
-	            <a href="#" onclick="confirmLogout()">會員登出</a> 
-	        </div>
-	    </div>
+               <button class="dropbtn">後台管理</button>
+               <div class="dropdown-content">
+                   <a th:href="@{/back_end/login}">管理員登入</a>
+               </div>
+           </div>
+       		<div class="user-info">
+	            <div class="user-profile">
+	        <!-- 顯示會員頭像或預設圖片 -->
+	        <img th:src="${mebImg != null ? 'data:image/png;base64,' + mebImg : '/images/defaultavatar.png'}" 
+	             alt="會員頭像" 
+	             class="profile-picture" />
+		    </div>
+		        <div class="user-actions">
+		            <a th:if="${!isLoggedIn}" th:href="@{/front_end/login}">登入</a>
+		            <a href="#" onclick="confirmLogout()">會員登出</a> 
+		        </div>
+		    </div>
         </nav>
         
         <div class="carousel">

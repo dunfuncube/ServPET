@@ -20,7 +20,7 @@
 </head>
 <body>
 	<header>
-		<h1>servPet</h1>
+		<h1>servPET</h1>
 		<nav>
 			<ul>
 				<li><a href="#" th:href="@{/}">首頁</a></li>
@@ -357,30 +357,60 @@
     </script>
 
 	<!-- 收藏美容師功能 -->
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- SweetAlert 提示框  --> 
 	<script>
 	document.addEventListener("DOMContentLoaded", function() {
 	    // 收藏按鈕點擊事件
 	    document.getElementById("booking-button").addEventListener("click", function() {
 	        const pgId = this.getAttribute("data-pg-id"); // 從按鈕中取得 pgId
-	
+
 	        fetch("/pgFav/add", {
 	            method: "POST",
 	            headers: {
-	                "Content-Type": "application/x-www-form-urlencoded"
+	                "Content-Type": "application/x-www-form-urlencoded",
+	                "X-Requested-With": "XMLHttpRequest" // 告知後端這是 AJAX 請求
 	            },
 	            body: `pgId=${pgId}` // 傳送 pgId 給後端
 	        })
-	        .then(response => response.text())
+	        .then(response => {
+	            if (response.status === 401) { // 如果 HTTP 狀態碼是 401 (未授權)
+	                Swal.fire({
+	                    icon: 'warning',
+	                    title: '尚未登入！',
+	                    text: '請先登入後再加入收藏。',
+	                    confirmButtonText: '前往登入',
+	                    footer: '<a href="/front_end/login.html">立即登入</a>'
+	                }).then(() => {
+	                    window.location.href = "/front_end/login.html"; // 導向登入頁面
+	                });
+	            } else if (response.ok) {
+	                return response.text(); // 取得後端返回的訊息
+	            } else {
+	                throw new Error("請確認是否已登入會員喔！");
+	            }
+	        })
 	        .then(data => {
-	            // 顯示成功或失敗的訊息
-	            alert(data); // 例如: "收藏已成功加入！"
+	            if (data) {
+	                Swal.fire({
+	                    icon: 'success',
+	                    title: '收藏已成功加入！',
+	                    text: data,
+	                    timer: 1500,
+	                    showConfirmButton: false
+	                });
+	            }
 	        })
 	        .catch(error => {
 	            console.error("Error:", error);
-	            alert("收藏失敗，請稍後再試！");
+	            Swal.fire({
+	                icon: 'error',
+	                title: '操作失敗！',
+	                text: error.message || "發生未知錯誤，請稍後再試。"
+	            });
 	        });
 	    });
 	});
+
 	</script>
 	
 
