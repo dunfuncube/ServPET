@@ -6,21 +6,24 @@ import com.servPet.pdoItem.model.PdoItemVO;
 import com.servPet.vtr.model.VtrService;
 import com.servPet.pdo.model.PdoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import java.util.List;
 import java.util.Optional;
-
-import com.servPet.meb.model.MebVO;
 
 @Service
 public class MebPdoService {
 
     @Autowired
     private PdoRepository pdoRepository;
-    
+
     @Autowired
     private PdoItemRepository pdoItemRepository;
-    
+
     @Autowired
     private VtrService vtrService;
 
@@ -32,103 +35,72 @@ public class MebPdoService {
     }
 
     // 取得單一訂單資訊
-    public PdoVO getOrderById(Integer pdoId) {
-        return pdoRepository.findById(pdoId).orElse(null);
+    public Optional<PdoVO> getOrderById(Integer pdoId) {
+        return pdoRepository.findById(pdoId);
     }
-    
+
     // 取得指定訂單的詳細資訊
     public List<PdoItemVO> getPdoItemsByPdoId(Integer pdoId) {
         return pdoItemRepository.findByPdoVO(pdoId);
     }
 
-    // 取消訂單
-//    public void cancelOrder(Integer pdoId) {
-//        Optional<PdoVO> optionalOrder = pdoRepository.findById(pdoId); // 查詢訂單
-//        if (!optionalOrder.isPresent()) { // 檢查是否存在
-//            throw new RuntimeException("無此訂單");
-//        }
-//        PdoVO pdo = optionalOrder.get(); // 取得訂單物件
-//        pdo.setPdoStatus("已取消"); // 設定狀態為"已取消"
-//        pdoRepository.save(pdo); // 更新訂單狀態到資料庫
-//    }
+    // 取消訂單並金額退回錢包（加上限制條件）
+    @ResponseBody
+    public boolean cancelOrder(Integer pdoId) {
+        Optional<PdoVO> optionalOrder = pdoRepository.findById(pdoId);
+
+        if (optionalOrder.isPresent()) {
+            PdoVO order = optionalOrder.get();
+
+            // 取消條件驗證
+            boolean canCancel = "0".equals(order.getPdoStatus()) &&    // 進行中
+                                "1".equals(order.getPaymentStatus()) && // 已付款
+                                "0".equals(order.getShippingMethod()) &&// 宅配
+                                "0".equals(order.getShippingStatus());  // 理貨中
+
+            if (canCancel) {
+                // 修改訂單狀態
+                order.setPdoStatus("2");          // 訂單狀態設為已取消
+                order.setPaymentStatus("2");      // 付款狀態設為已退款
+                order.setPdoUpdateTime(new java.util.Date());
+                pdoRepository.save(order);
+
+                // 退款邏輯
+                Integer refundAmount = order.getPdTotalPrice();
+                Integer mebId = order.getMebVO().getMebId();
+                vtrService.createTransaction(mebId, refundAmount, "退款");
+
+                return true; // 取消成功
+            }
+        }
+        return false; // 無法取消
+    }
     
-//    // 取消訂單
-//    public void cancelOrder(Integer pdoId) {
-//        // 查詢訂單
-//        PdoVO pdo = pdoRepository.findById(pdoId).orElse(null);
-//
-//        // 檢查訂單是否存在
-//        if (pdo == null) {
-//            throw new RuntimeException("訂單不存在");
-//        }
-//
-//        // 檢查訂單狀態，只有 '進行中' (假設狀態為 '0') 才能取消
-//        if (!"0".equals(pdo.getPdoStatus())) {
-//            throw new IllegalStateException("該訂單無法取消，因為訂單狀態不是進行中");
-//        }
-//
-//        // 修改訂單狀態為已取消
-//        pdo.setPdoStatus("2");
-//        pdo.setPaymentStatus("2");
-//        pdo.setPdoUpdateTime(new java.util.Date());
-//
-//        // 儲存更新後的訂單
-//        PdoVO updatedPdo = pdoRepository.save(pdo);
-//        if (updatedPdo != null) {
-//            System.out.println("訂單取消成功: 訂單狀態已更新為 '已取消'");
-//        } else {
-//            System.out.println("訂單取消失敗: 無法更新訂單");
-//            throw new RuntimeException("更新訂單失敗");
-//        }
-//    }
-
-    // 取消訂單並金儲值金退回錢包
-    public void cancelOrder(Integer pdoId) {
+    // 修改地址
+    public boolean updateShippingAddress(Integer pdoId, String newAddress) {
         // 查詢訂單
-        PdoVO pdo = pdoRepository.findById(pdoId).orElse(null);
-
-        // 檢查訂單是否存在
-        if (pdo == null) {
+        Optional<PdoVO> optionalOrder = pdoRepository.findById(pdoId);
+        if (!optionalOrder.isPresent()) {
             throw new RuntimeException("訂單不存在");
         }
 
-        // 檢查訂單狀態，只有 '進行中' (假設狀態為 '0') 才能取消
-        if (!"0".equals(pdo.getPdoStatus())) {
-            throw new IllegalStateException("該訂單無法取消，因為訂單狀態不是進行中");
+        PdoVO pdo = optionalOrder.get();
+
+        // 檢查訂單狀態，只能在「進行中」且「理貨中」時修改地址
+        if (!"0".equals(pdo.getPdoStatus()) || !"0".equals(pdo.getShippingStatus()) ) {
+            return false; // 不允許修改地址
         }
 
-        // 修改訂單狀態為已取消
-        pdo.setPdoStatus("2"); // 設定訂單狀態為已取消
-        pdo.setPaymentStatus("2"); // 設定付款狀態為已退款
-        pdo.setPdoUpdateTime(new java.util.Date());
+        // 更新地址
+        pdo.setShippingAddr(newAddress);
+        pdo.setPdoUpdateTime(new java.util.Date()); // 更新修改時間
         pdoRepository.save(pdo);
 
-        // 將金額退回到會員錢包
-        Integer refundAmount = pdo.getPdTotalPrice(); // 訂單金額
-        Integer mebId = pdo.getMebVO().getMebId();    // 取得會員 ID
-        vtrService.createTransaction(mebId, refundAmount, "退款"); // 建立退款交易紀錄
+        return true;
+    }
+    public void saveOrder(PdoVO order) {
+        pdoRepository.save(order);
     }
 
-    
-//    public void updateShippingAddress(Integer pdoId, String newAddress) {
-//        PdoVO pdo = pdoRepository.findById(pdoId).orElse(null); // 查詢訂單
-//        if (pdo != null) {
-//            // 條件檢查
-//            if ("0".equals(pdo.getPdoStatus()) && "1".equals(pdo.getPaymentStatus()) &&
-//                "0".equals(pdo.getShippingMethod()) && "0".equals(pdo.getShippingStatus())) {
-//                // 更新配送地址
-//                pdo.setShippingAddr(newAddress);
-//                // 更新訂單最後修改時間
-//                pdo.setPdoUpdateTime(new java.util.Date());
-//                // 儲存更新後的訂單
-//                pdoRepository.save(pdo);
-//            } else {
-//                throw new IllegalStateException("當前訂單狀態不允許修改配送地址");
-//            }
-//        } else {
-//            throw new IllegalArgumentException("訂單不存在");
-//        }
-//    }
 
-    
 }

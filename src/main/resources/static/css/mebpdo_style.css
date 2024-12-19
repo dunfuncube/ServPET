@@ -155,6 +155,46 @@ h2 {
     cursor: not-allowed;
 }
 
+.edit-address-btn {
+    background-color: blue;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.edit-address-btn:hover {
+    background-color: #cc0000;
+}
+
+.edit-address-btn.disabled-btn {
+    background-color: #d9d9d9;
+    color: #888;
+    cursor: not-allowed;
+}
+
+.cancelled-row {
+    background-color: #f2f2f2; /* 背景灰色 */
+    color: #aaa; /* 字體灰色 */
+}
+
+.cancelled-row td {
+    text-decoration: line-through; /* 文字刪除線 */
+}
+
+button.disabled-btn {
+    background-color: #d9d9d9; /* 禁用按鈕灰色背景 */
+    color: #888;
+    cursor: not-allowed;
+}
+
+button.disabled-btn {
+    background-color: #d9d9d9;
+    color: #888;
+    cursor: not-allowed;
+}
+
 /* 燈箱樣式 */
 .modal {
   display: none;

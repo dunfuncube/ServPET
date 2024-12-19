@@ -374,6 +374,11 @@ footer {
 	background: #f00;
 }
 </style>
+
+<!--立文的商品收藏 SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
 </head>
 <body>
 	<header>
@@ -667,17 +672,46 @@ footer {
                 data: { pdId: productId },  // 傳送商品 ID
                 success: function (response) {
                     if (response === "請先登入會員") {
-                        alert(response);
-                        window.location.href = "/front_end/login"; // 導向登入頁面
+                        Swal.fire({
+                            title: "需要登入",
+                            text: "您尚未登入，請先登入會員以收藏商品。",
+                            icon: "info",
+                            showCancelButton: true,
+                            confirmButtonText: "前往登入",
+                            cancelButtonText: "取消"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = "/front_end/login"; // 導向登入頁面
+                            }
+                        });
+                    } else if (response === "商品已經收藏過囉！") {
+                        Swal.fire({
+                            title: "已收藏",
+                            text: "該商品已經在您的收藏列表中！",
+                            icon: "warning",
+                            confirmButtonText: "確定"
+                        });
                     } else {
-                        alert(response); // 收藏成功或其他訊息
+                        Swal.fire({
+                            title: "收藏成功",
+                            text: response, // 成功訊息
+                            icon: "success",
+                            confirmButtonText: "確定"
+                        });
                     }
                 },
                 error: function () {
-                    alert("加入收藏失敗，請稍後再試！");
+                    Swal.fire({
+                        title: "錯誤",
+                        text: "加入收藏失敗，請稍後再試！",
+                        icon: "error",
+                        confirmButtonText: "確定"
+                    });
                 }
             });
         });
+
+
 
      // 燈箱功能
   

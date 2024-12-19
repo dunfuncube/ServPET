@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +30,7 @@ public class PdFavController {
 	@Autowired
     private PdFavService pdFavService;
     
-	// 查詢全部美容師收藏
+	// 查詢全部商品收藏
     @GetMapping("/list")
     public String listFavorites(Model model, Principal principal) {
     	boolean isLoggedIn = (principal != null);
@@ -37,44 +38,21 @@ public class PdFavController {
         return "front_end/pdFav/listAllPdFav"; // 對應 /templates/front_end//pdFav/listAllPdFav.html
     }
 
-//    @PostMapping("/add")
-//    @ResponseBody
-//    public String addFavorite(HttpSession session, @RequestParam Integer pdId,Principal princiapl) {
-//    	
-//    	/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
-////        // 取得 mebVO 和 pdDetailsVO
-////        MebVO mebVO = new MebVO();
-////        PdDetailsVO pdDetailsVO = new PdDetailsVO();
-////        mebVO.setMebId(mebId);
-////        pdDetailsVO.setPdId(pdId);
-//    	Optional<MebVO> OptionalmebVO = mebService.findMemberByEmail(princiapl.getName());
-//    	// 從 session 中取得已登入的會員資訊
-////    	MebVO mebVO = (MebVO) session.getAttribute("mebVO");
-//    	
-//    	// 檢查 session 是否有會員資訊
-//        if (OptionalmebVO == null) {
-//            return "請先登入會員";
-//        }
-//        
-//        /*************************** 2.開始新增資料 *****************************************/
-////        String result = pdFavService.addFavorite(mebVO, pdDetailsVO);
-//        MebVO member = OptionalmebVO.get();
-//        // pdId 已經從請求參數中獲得，直接傳入 Service
-//        String result = pdFavService.addFavorite(member.getMebId(), pdId);
-//        
-//        /*************************** 3.新增完成,準備返回(Send the Success view) **************/
-//        return result;  // 回傳新增成功或失敗的訊息
-//    }
-
     
     
     @PostMapping("/add")
     @ResponseBody
     public String addFavorite(HttpSession session, @RequestParam Integer pdId, Principal principal) {
+        // 驗證用戶是否已登入
+        if (principal == null) {
+            return "請先登入會員";
+        }
+
         Optional<MebVO> optionalMebVO = mebService.findMemberByEmail(principal.getName());
         if (!optionalMebVO.isPresent()) {
             return "請先登入會員";
         }
+
         MebVO mebVO = optionalMebVO.get();
         String result = pdFavService.addFavorite(mebVO.getMebId(), pdId);
         return result; // 傳回成功或失敗的訊息
@@ -83,12 +61,14 @@ public class PdFavController {
     
     
     @PostMapping("/deleteFavorite")
-    public String deleteFavorite(@RequestParam Integer pdFavId, RedirectAttributes redirectAttributes) {
+    @ResponseBody
+    public ResponseEntity<String> deleteFavorite(@RequestParam Integer pdFavId) {
         if (pdFavId != null) {
             pdFavService.deleteFavoriteById(pdFavId);
-            redirectAttributes.addFlashAttribute("successMessage", "已成功取消收藏！");
+            return ResponseEntity.ok("已成功取消收藏！");
+        } else {
+            return ResponseEntity.badRequest().body("收藏 ID 不存在！");
         }
-        return "redirect:/pdFav/list";
     }
 
     

@@ -1,98 +1,117 @@
-// 取消訂單的燈箱
+// 取消訂單的 SweetAlert2 燈箱
 let currentPdoId = null;
-let currentMebId = null;
-let refundAmount = null;
 
-// 開啟確認取消的燈箱
-function openCancelModal(pdoId, mebId, amount) {
+function openCancelModal(pdoId) {
     currentPdoId = pdoId;
-    currentMebId = mebId;
-    refundAmount = amount;
-    const modal = document.getElementById('cancel-modal');
-    modal.style.display = "block";
+
+    Swal.fire({
+        title: '確定要取消此筆訂單嗎？',
+        text: '訂單取消後將無法復原！',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: '確認取消',
+        cancelButtonText: '返回',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            confirmCancel();
+        }
+    });
 }
 
-// 關閉燈箱
-function closeCancelModal() {
-    currentPdoId = null;
-    currentMebId = null;
-    refundAmount = null;
-    const modal = document.getElementById('cancel-modal');
-    modal.style.display = "none";
-}
-
-// 確認取消訂單
 function confirmCancel() {
-    if (currentPdoId && currentMebId && refundAmount) {
+    if (currentPdoId) {
         fetch(`/mebPdo/${currentPdoId}/cancel`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
+            headers: { 'Content-Type': 'application/json' }
         })
-        .then(response => {
-            if (response.ok) {
-                alert('訂單已取消，金額已退回錢包');
-                location.reload(); // 重新加載頁面顯示最新資料
-            } else {
-                alert('取消訂單失敗，請稍後再試');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('發生錯誤，請稍後再試');
-        });
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.success) {
+                    Swal.fire('已取消', data.message, 'success').then(() => {
+                        // 更新整列外觀
+                        const row = document.querySelector(`tr[data-pdoid="${currentPdoId}"]`);
+                        if (row) {
+                            row.classList.add('cancelled-row');
+                            row.querySelectorAll('button').forEach((btn) => {
+                                btn.classList.add('disabled-btn');
+                                btn.disabled = true;
+                            });
+                        }
+                    });
+                } else {
+                    Swal.fire('錯誤！', data.message || '請稍後再試', 'error');
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                Swal.fire('錯誤！', '發生錯誤，請稍後再試', 'error');
+            });
     }
-    closeCancelModal();
 }
 
-// 修改地址的燈箱
+
+
+// 修改地址的 SweetAlert2 燈箱
 let currentEditPdoId = null;
 
-// 開啟修改地址的燈箱
 function openEditAddressModal(pdoId, currentAddress) {
     currentEditPdoId = pdoId;
-    document.getElementById('new-address').value = currentAddress; // 預填當前地址
-    document.getElementById('edit-address-modal').style.display = 'block';
+
+    Swal.fire({
+        title: '請輸入新的配送地址：',
+        input: 'text',
+        inputValue: currentAddress, // 預設當前地址
+        showCancelButton: true,
+        confirmButtonText: '確認',
+        cancelButtonText: '取消',
+        preConfirm: (newAddress) => {
+            if (!newAddress) {
+                Swal.showValidationMessage('地址不能為空');
+                return false;
+            }
+            return newAddress; // 返回輸入的值
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            confirmUpdateAddress(result.value); // 呼叫確認更新地址
+        }
+    });
 }
 
-// 從按鈕的 data-* 屬性中讀取數據並打開燈箱
-function openEditAddressModalFromData(button) {
-    const pdoId = button.getAttribute('data-pdoid');
-    const shippingAddr = button.getAttribute('data-shippingaddr');
-    openEditAddressModal(pdoId, shippingAddr);
-}
-
-// 關閉燈箱
-function closeEditAddressModal() {
-    currentEditPdoId = null;
-    document.getElementById('edit-address-modal').style.display = 'none';
-}
-
-// 確認修改地址
-function confirmUpdateAddress() {
-    const newAddress = document.getElementById('new-address').value;
-
+function confirmUpdateAddress(newAddress) {
     if (currentEditPdoId) {
         fetch(`/mebPdo/${currentEditPdoId}/updateAddress`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `newAddress=${encodeURIComponent(newAddress)}`
         })
         .then(response => {
-            if (response.ok) {
-                alert('配送地址更新成功');
-                location.reload(); // 重新載入頁面
-            } else {
-                alert('更新配送地址失敗，請稍後再試');
-            }
+            return response.text().then(message => {
+                if (response.ok) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '成功！',
+                        text: message // 使用後端返回的成功訊息
+                    }).then(() => {
+                        location.reload(); // 重新加載頁面
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '錯誤！',
+                        text: message // 使用後端返回的錯誤訊息
+                    });
+                }
+            });
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('發生錯誤，請稍後再試');
+            Swal.fire({
+                icon: 'error',
+                title: '錯誤！',
+                text: '發生錯誤，請稍後再試'
+            });
         });
     }
-    closeEditAddressModal();
 }
